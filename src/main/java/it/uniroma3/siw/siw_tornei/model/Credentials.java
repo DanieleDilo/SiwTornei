@@ -3,6 +3,7 @@ package it.uniroma3.siw.siw_tornei.model;
 import jakarta.persistence.*;
 import java.util.Objects;
 
+@SuppressWarnings("unused")
 @Entity
 public class Credentials {
 

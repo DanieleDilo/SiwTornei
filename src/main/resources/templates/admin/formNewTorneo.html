@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Nuovo Torneo</title>
+</head>
+<body>
+    <h1>Crea un Nuovo Torneo</h1>
+    <form th:action="@{/admin/torneo}" th:object="${torneo}" method="POST">
+        <div>
+            Nome: <input type="text" th:field="*{nome}" required />
+        </div>
+        <div>
+            Anno: <input type="number" th:field="*{anno}" required />
+        </div>
+        <div>
+            Descrizione: <textarea th:field="*{descrizione}"></textarea>
+        </div>
+        <div>
+            <button type="submit">Salva Torneo</button>
+        </div>
+    </form>
+</body>
+</html>

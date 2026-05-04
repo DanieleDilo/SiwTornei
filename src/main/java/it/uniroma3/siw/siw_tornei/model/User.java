@@ -3,6 +3,7 @@ package it.uniroma3.siw.siw_tornei.model;
 import jakarta.persistence.*;
 import java.util.Objects;
 
+@SuppressWarnings("unused")
 @Entity
 @Table(name = "users") // "user" è parola riservata in molti DB, meglio "users"
 public class User {
