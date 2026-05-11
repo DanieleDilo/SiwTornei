@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>SIW Tornei - Nuova Squadra</title>
+</head>
+<body>
+    <h1>Inserisci una Nuova Squadra</h1>
+    
+    <form th:action="@{/admin/squadra}" th:object="${squadra}" method="POST">
+        <div>
+            <label>Nome Squadra:</label>
+            <input type="text" th:field="*{nome}" required />
+        </div>
+        <div>
+            <label>Anno di Fondazione:</label>
+            <input type="number" th:field="*{annoFondazione}" required />
+        </div>
+        <div>
+            <label>Città:</label>
+            <input type="text" th:field="*{citta}" required />
+        </div>
+        <div style="margin-top: 10px;">
+            <button type="submit">Salva Squadra</button>
+        </div>
+    </form>
+    
+    <hr>
+    <a th:href="@{/admin/index}">Torna al Pannello Admin</a>
+</body>
+</html>

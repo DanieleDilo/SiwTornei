@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class SquadraService {
 
@@ -18,7 +21,16 @@ public class SquadraService {
     }
 
     @Transactional(readOnly = true)
-    public Iterable<Squadra> findAll() {
-        return this.squadraRepository.findAll();
+    public List<Squadra> findAll() {
+        List<Squadra> squadre = new ArrayList<>();
+        for (Squadra s : this.squadraRepository.findAll()) {
+            squadre.add(s);
+        }
+        return squadre;
+    }
+
+    @Transactional(readOnly = true)
+    public Squadra findById(Long id) {
+        return this.squadraRepository.findById(id).orElse(null);
     }
 }

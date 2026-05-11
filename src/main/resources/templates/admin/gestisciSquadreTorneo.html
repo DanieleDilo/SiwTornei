@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestione Iscrizioni Torneo</title>
+</head>
+<body>
+    <h1>Gestione Iscrizioni: <span th:text="${torneo.nome}">Nome Torneo</span></h1>
+    
+    <hr>
+    
+    <h3>Squadre Attualmente Iscritte:</h3>
+    <ul th:if="${torneo.squadre != null and !torneo.squadre.isEmpty()}">
+        <li th:each="squadraIscritta : ${torneo.squadre}">
+            <span th:text="${squadraIscritta.nome}">Nome</span> 
+            (<span th:text="${squadraIscritta.citta}">Città</span>)
+        </li>
+    </ul>
+    <p th:unless="${torneo.squadre != null and !torneo.squadre.isEmpty()}">
+        Nessuna squadra iscritta a questo torneo.
+    </p>
+
+    <hr>
+
+    <h3>Squadre Disponibili per l'Iscrizione:</h3>
+    <ul th:if="${squadreDisponibili != null and !squadreDisponibili.isEmpty()}">
+        <li th:each="squadra : ${squadreDisponibili}">
+            <span th:text="${squadra.nome}">Nome</span>
+            <form th:action="@{'/admin/torneo/' + ${torneo.id} + '/squadra/' + ${squadra.id}}" method="POST" style="display:inline;">
+                <button type="submit">Iscrivi al Torneo</button>
+            </form>
+        </li>
+    </ul>
+    <p th:unless="${squadreDisponibili != null and !squadreDisponibili.isEmpty()}">
+        Tutte le squadre esistenti sono già iscritte a questo torneo!
+    </p>
+
+    <hr>
+    <a th:href="@{/admin/index}">Torna al Pannello Admin</a>
+</body>
+</html>

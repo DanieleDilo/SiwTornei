@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>SIW Tornei - Pannello Admin</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        .dashboard-menu { margin-top: 20px; }
+        .dashboard-menu a { display: block; margin-bottom: 10px; font-size: 18px; text-decoration: none; color: #0056b3; }
+        .dashboard-menu a:hover { text-decoration: underline; }
+        .success-box { border-left: 4px solid #28a745; padding-left: 10px; margin-bottom: 20px;}
+    </style>
+</head>
+<body>
+    <h1>⚙️ Pannello di Controllo Amministratore</h1>
+    
+    <div class="success-box">
+        <p>Benvenuto nell'area riservata. Da qui puoi gestire l'intero sistema dei tornei.</p>
+    </div>
+
+    <div class="dashboard-menu">
+        <h3>Gestione Tornei</h3>
+        <a th:href="@{/admin/formNewTorneo}">➕ Crea un nuovo Torneo</a>
+        
+        <h3>Gestione Squadre e Giocatori</h3>
+        <a th:href="@{/admin/formNewSquadra}">➕ Inserisci una nuova Squadra</a>
+        <p><em>(Per aggiungere giocatori o iscrivere squadre ai tornei, naviga nelle pagine di dettaglio dei tornei e delle squadre)</em></p>
+
+        <h3>Gestione Partite</h3>
+        <a th:href="@{/admin/formNewPartita}">⚽ Programma una nuova Partita</a>
+    </div>
+
+    <hr>
+    <a th:href="@{/}">🏠 Torna alla Home Pubblica</a>
+</body>
+</html>

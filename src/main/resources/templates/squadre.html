@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Elenco Squadre</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        ul { list-style-type: none; padding: 0; }
+        li { background: #e9ecef; margin: 10px 0; padding: 15px; border-radius: 5px; }
+        a { text-decoration: none; color: #28a745; font-weight: bold; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <h1>🛡️ Elenco Squadre</h1>
+    
+    <div th:if="${squadre != null and !squadre.isEmpty()}">
+        <ul>
+            <li th:each="squadra : ${squadre}">
+                <strong th:text="${squadra.nome}">Nome</strong> 
+                - Fondata nel <span th:text="${squadra.annoFondazione}">Anno</span> a <span th:text="${squadra.citta}">Città</span>
+                <br><br>
+                <a th:href="@{'/squadra/' + ${squadra.id}}">Vedi Giocatori e Dettagli</a>
+            </li>
+        </ul>
+    </div>
+    
+    <div th:unless="${squadre != null and !squadre.isEmpty()}">
+        <p>Nessuna squadra registrata al momento.</p>
+    </div>
+
+    <hr>
+    <a th:href="@{/}">🏠 Torna alla Home</a>
+</body>
+</html>

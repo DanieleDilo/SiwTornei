@@ -1,6 +1,8 @@
 package it.uniroma3.siw.siw_tornei.service;
 
+import it.uniroma3.siw.siw_tornei.model.Squadra;
 import it.uniroma3.siw.siw_tornei.model.Torneo;
+import it.uniroma3.siw.siw_tornei.repository.SquadraRepository;
 import it.uniroma3.siw.siw_tornei.repository.TorneoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +15,10 @@ import java.util.List;
 public class TorneoService {
 
     @Autowired
-    private TorneoRepository torneoRepository; //
+    private TorneoRepository torneoRepository;
+
+    @Autowired
+    private SquadraRepository squadraRepository;
 
     /**
      * Salva un nuovo torneo nel sistema.
@@ -26,7 +31,7 @@ public class TorneoService {
 
     /**
      * Ritorna tutti i tornei.
-     * Operazione di sola lettura: il docente consiglia di distinguere i livelli di isolamento.
+     * Operazione di sola lettura
      */
     @Transactional(readOnly = true)
     public List<Torneo> findAll() {
@@ -41,5 +46,21 @@ public class TorneoService {
     @Transactional(readOnly = true)
     public Torneo findById(Long id) {
         return this.torneoRepository.findById(id).orElse(null);
+    }
+
+    /**
+     * Iscrive una squadra a un torneo.
+     * Salva la relazione aggiornando la squadra (lato owning della relazione).
+     */
+    @Transactional
+    public void addSquadraToTorneo(Long torneoId, Long squadraId) {
+        Torneo torneo = this.torneoRepository.findById(torneoId).orElse(null);
+        Squadra squadra = this.squadraRepository.findById(squadraId).orElse(null);
+        
+        if (torneo != null && squadra != null) {
+            // Aggiungiamo il torneo alla lista dei tornei della squadra
+            squadra.getTornei().add(torneo);
+            this.squadraRepository.save(squadra);
+        }
     }
 }

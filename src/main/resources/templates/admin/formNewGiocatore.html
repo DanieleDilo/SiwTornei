@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Nuovo Giocatore</title>
+</head>
+<body>
+    <h1>Aggiungi Giocatore a: <span th:text="${squadra.nome}">Nome Squadra</span></h1>
+    
+    <form th:action="@{'/admin/squadra/' + ${squadra.id} + '/giocatore'}" th:object="${giocatore}" method="POST">
+        <div>
+            <label>Nome:</label>
+            <input type="text" th:field="*{nome}" required />
+        </div>
+        <div>
+            <label>Cognome:</label>
+            <input type="text" th:field="*{cognome}" required />
+        </div>
+        <div>
+            <label>Data di Nascita:</label>
+            <input type="date" th:field="*{dataNascita}" required />
+        </div>
+        <div>
+            <label>Ruolo:</label>
+            <select th:field="*{ruolo}">
+                <option value="Portiere">Portiere</option>
+                <option value="Difensore">Difensore</option>
+                <option value="Centrocampista">Centrocampista</option>
+                <option value="Attaccante">Attaccante</option>
+            </select>
+        </div>
+        <div>
+            <label>Altezza (es. 1.85):</label>
+            <input type="number" step="0.01" th:field="*{altezza}" required />
+        </div>
+        <div style="margin-top: 15px;">
+            <button type="submit">Salva Giocatore</button>
+        </div>
+    </form>
+    
+    <hr>
+    <a th:href="@{/admin/index}">Torna al Pannello Admin</a>
+</body>
+</html>

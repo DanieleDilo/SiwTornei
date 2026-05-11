@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Calendario e Risultati</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        .partita-card { border: 1px solid #ccc; padding: 15px; margin-bottom: 15px; border-radius: 8px; }
+        .risultato { font-weight: bold; font-size: 1.2em; color: #d9534f; }
+        .da-giocare { color: #5bc0de; font-style: italic; }
+    </style>
+</head>
+<body>
+    <h1>⚽ Calendario e Risultati</h1>
+    
+    <div th:if="${partite != null and !partite.isEmpty()}">
+        <div th:each="partita : ${partite}" class="partita-card">
+            
+            <h3 th:text="${partita.torneo.nome}">Nome Torneo</h3>
+            <p><strong>Data:</strong> <span th:text="${partita.dataOra}">Data</span> | <strong>Stadio:</strong> <span th:text="${partita.luogo}">Luogo</span></p>
+            
+            <p>
+                <span th:text="${partita.squadraCasa.nome}">Squadra Casa</span> 
+                <strong> VS </strong> 
+                <span th:text="${partita.squadraTrasferta.nome}">Squadra Trasferta</span>
+            </p>
+            
+            <p th:if="${partita.stato.name() == 'PLAYED'}" class="risultato">
+                Risultato: <span th:text="${partita.goalsHome}">0</span> - <span th:text="${partita.goalsAway}">0</span>
+            </p>
+            <p th:if="${partita.stato.name() == 'SCHEDULED'}" class="da-giocare">
+                Stato: Da giocare
+            </p>
+            
+        </div>
+    </div>
+    
+    <div th:unless="${partite != null and !partite.isEmpty()}">
+        <p>Non ci sono partite in calendario al momento.</p>
+    </div>
+
+    <hr>
+    <a th:href="@{/}">🏠 Torna alla Home</a>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Inserisci Risultato</title>
+</head>
+<body>
+    <h1>Inserisci Risultato Partita</h1>
+    
+    <div style="background-color: #f4f4f4; padding: 15px; margin-bottom: 20px; border-radius: 5px;">
+        <p><strong>Torneo:</strong> <span th:text="${partita.torneo.nome}">Torneo</span></p>
+        <p><strong>Incontro:</strong> <span th:text="${partita.squadraCasa.nome}">Squadra 1</span> vs <span th:text="${partita.squadraTrasferta.nome}">Squadra 2</span></p>
+        <p><strong>Data:</strong> <span th:text="${partita.dataOra}">Data</span></p>
+    </div>
+
+    <form th:action="@{'/admin/partita/' + ${partita.id} + '/risultato'}" th:object="${partita}" method="POST">
+        
+        <div>
+            <label>Gol <span th:text="${partita.squadraCasa.nome}">Casa</span>:</label>
+            <input type="number" min="0" th:field="*{goalsHome}" required />
+        </div>
+        
+        <br>
+
+        <div>
+            <label>Gol <span th:text="${partita.squadraTrasferta.nome}">Trasferta</span>:</label>
+            <input type="number" min="0" th:field="*{goalsAway}" required />
+        </div>
+
+        <div style="margin-top: 20px;">
+            <button type="submit">Salva Risultato Definitivo</button>
+        </div>
+    </form>
+    
+    <hr>
+    <a th:href="@{/admin/index}">Torna al Pannello Admin</a>
+</body>
+</html>

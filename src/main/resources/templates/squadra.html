@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>SIW Tornei - Dettaglio Squadra</title>
+</head>
+<body>
+    <h1>Informazioni Squadra</h1>
+    
+    <div th:if="${squadra != null}">
+        <p><strong>Nome:</strong> <span th:text="${squadra.nome}">Nome</span></p>
+        <p><strong>Città:</strong> <span th:text="${squadra.citta}">Città</span></p>
+        <p><strong>Fondazione:</strong> <span th:text="${squadra.annoFondazione}">1900</span></p>
+        
+        <h3>Giocatori:</h3>
+        <ul th:if="${squadra.giocatori != null and !squadra.giocatori.isEmpty()}">
+            <li th:each="giocatore : ${squadra.giocatori}">
+                <span th:text="${giocatore.nome} + ' ' + ${giocatore.cognome}">Nome Giocatore</span>
+            </li>
+        </ul>
+        <p th:unless="${squadra.giocatori != null and !squadra.giocatori.isEmpty()}">
+            Nessun giocatore registrato per questa squadra.
+        </p>
+    </div>
+
+    <div th:unless="${squadra != null}">
+        <p>Squadra non trovata.</p>
+    </div>
+
+    <hr>
+    <a th:href="@{/squadra}">Vedi tutte le squadre</a> | 
+    <a th:href="@{/}">Home</a>
+</body>
+</html>

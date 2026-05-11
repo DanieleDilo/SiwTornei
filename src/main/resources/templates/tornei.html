@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista Tornei</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        ul { list-style-type: none; padding: 0; }
+        li { background: #f4f4f4; margin: 10px 0; padding: 15px; border-radius: 5px; }
+        a { text-decoration: none; color: #007bff; font-weight: bold; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <h1>🏆 Tornei Disponibili</h1>
+    
+    <div th:if="${tornei != null and !tornei.isEmpty()}">
+        <ul>
+            <li th:each="torneo : ${tornei}">
+                <span th:text="${torneo.nome}">Nome Torneo</span> 
+                (<span th:text="${torneo.anno}">Anno</span>) - 
+                <a th:href="@{'/torneo/' + ${torneo.id}}">Vedi Dettagli e Squadre</a>
+            </li>
+        </ul>
+    </div>
+    
+    <div th:unless="${tornei != null and !tornei.isEmpty()}">
+        <p>Nessun torneo registrato al momento.</p>
+    </div>
+
+    <hr>
+    <a th:href="@{/}">🏠 Torna alla Home</a>
+</body>
+</html>
