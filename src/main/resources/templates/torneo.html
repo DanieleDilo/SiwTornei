@@ -5,6 +5,7 @@
     <title>Dettaglio Torneo</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body class="bg-light">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm mb-4">
@@ -30,20 +31,47 @@
             
             <div class="col-md-8">
                 <div class="card shadow-sm border-0">
-                    <div class="card-header bg-white p-3">
-                        <h4 class="mb-0 fw-bold text-success"><i class="bi bi-shield-check"></i> Squadre Partecipanti</h4>
+                    <div class="card-header bg-white p-3 d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0 fw-bold text-success"><i class="bi bi-list-ol"></i> Classifica del Torneo</h4>
                     </div>
-                    <ul class="list-group list-group-flush" th:if="${torneo.squadre != null and !torneo.squadre.isEmpty()}">
-                        <li class="list-group-item d-flex justify-content-between align-items-center p-3" th:each="s : ${torneo.squadre}">
-                            <div>
-                                <span class="fw-bold" th:text="${s.nome}">Nome</span>
-                                <small class="text-muted ms-2" th:text="${s.citta}">Città</small>
-                            </div>
-                            <a th:href="@{'/squadra/' + ${s.id}}" class="btn btn-sm btn-light">Profilo</a>
-                        </li>
-                    </ul>
-                    <div th:unless="${torneo.squadre != null and !torneo.squadre.isEmpty()}" class="card-body text-center py-5">
-                        <p class="text-muted mb-0">Ancora nessuna squadra iscritta.</p>
+                    
+                    <div class="table-responsive" th:if="${classifica != null and !classifica.isEmpty()}">
+                        <table class="table table-hover table-striped align-middle mb-0 text-center">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>#</th>
+                                    <th class="text-start">Squadra</th>
+                                    <th>Pt</th>
+                                    <th>G</th>
+                                    <th>V</th>
+                                    <th>P</th>
+                                    <th>S</th>
+                                    <th>GF</th>
+                                    <th>GS</th>
+                                    <th>DR</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="riga, iterStat : ${classifica}">
+                                    <td class="fw-bold text-muted" th:text="${iterStat.count}">1</td>
+                                    <td class="text-start fw-bold text-primary">
+                                        <a th:href="@{'/squadra/' + ${riga.squadra.id}}" class="text-decoration-none" th:text="${riga.squadra.nome}">Nome</a>
+                                    </td>
+                                    <td class="fw-bold fs-5" th:text="${riga.punti}">0</td>
+                                    <td th:text="${riga.partiteGiocate}">0</td>
+                                    <td class="text-success" th:text="${riga.vittorie}">0</td>
+                                    <td class="text-warning" th:text="${riga.pareggi}">0</td>
+                                    <td class="text-danger" th:text="${riga.sconfitte}">0</td>
+                                    <td th:text="${riga.golFatti}">0</td>
+                                    <td th:text="${riga.golSubiti}">0</td>
+                                    <td th:text="${riga.differenzaReti}">0</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div th:unless="${classifica != null and !classifica.isEmpty()}" class="card-body text-center py-5">
+                        <p class="text-muted mb-0">Nessuna squadra iscritta a questo torneo.</p>
                     </div>
                 </div>
             </div>

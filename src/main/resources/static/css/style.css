@@ -1,0 +1,31 @@
+/* File: src/main/resources/static/css/style.css */
+
+/* Sfondo generale un po' più caldo rispetto a quello base di Bootstrap */
+body {
+    background-color: #f4f6f9;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Effetto di sollevamento quando passi col mouse sulle Card (nella Home e Tornei) */
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.15) !important;
+}
+
+/* Stile specifico per centrare la form di login (anziché metterlo nell'HTML) */
+.login-container {
+    max-width: 400px;
+    margin-top: 10vh;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Rendiamo la Navbar leggermente trasparente con effetto vetro */
+.navbar {
+    background-color: rgba(13, 110, 253, 0.95) !important;
+    backdrop-filter: blur(10px);
+}
