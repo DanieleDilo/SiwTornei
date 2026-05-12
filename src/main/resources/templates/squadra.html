@@ -2,33 +2,62 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>SIW Tornei - Dettaglio Squadra</title>
+    <title>Dettaglio Squadra</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 </head>
-<body>
-    <h1>Informazioni Squadra</h1>
-    
-    <div th:if="${squadra != null}">
-        <p><strong>Nome:</strong> <span th:text="${squadra.nome}">Nome</span></p>
-        <p><strong>Città:</strong> <span th:text="${squadra.citta}">Città</span></p>
-        <p><strong>Fondazione:</strong> <span th:text="${squadra.annoFondazione}">1900</span></p>
-        
-        <h3>Giocatori:</h3>
-        <ul th:if="${squadra.giocatori != null and !squadra.giocatori.isEmpty()}">
-            <li th:each="giocatore : ${squadra.giocatori}">
-                <span th:text="${giocatore.nome} + ' ' + ${giocatore.cognome}">Nome Giocatore</span>
-            </li>
-        </ul>
-        <p th:unless="${squadra.giocatori != null and !squadra.giocatori.isEmpty()}">
-            Nessun giocatore registrato per questa squadra.
-        </p>
-    </div>
+<body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm mb-4">
+        <div class="container">
+            <a class="navbar-brand fw-bold" th:href="@{/}"><i class="bi bi-trophy-fill text-warning"></i> SIW Tornei</a>
+        </div>
+    </nav>
 
-    <div th:unless="${squadra != null}">
-        <p>Squadra non trovata.</p>
+    <div class="container" th:if="${squadra != null}">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card shadow-sm border-0 mb-4 bg-success text-white">
+                    <div class="card-body text-center py-5">
+                        <i class="bi bi-shield-fill display-1"></i>
+                        <h2 class="fw-bold mt-3" th:text="${squadra.nome}">Nome</h2>
+                        <p class="mb-0 fs-5"><i class="bi bi-geo-alt-fill"></i> <span th:text="${squadra.citta}">Città</span></p>
+                        <p>Dal <span th:text="${squadra.annoFondazione}">1900</span></p>
+                    </div>
+                </div>
+                <a th:href="@{'/admin/squadra/' + ${squadra.id} + '/formNewGiocatore'}" class="btn btn-dark w-100 shadow-sm mb-3">
+                    <i class="bi bi-person-plus"></i> Aggiungi Giocatore (Admin)
+                </a>
+            </div>
+            
+            <div class="col-md-8">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-white p-3">
+                        <h4 class="mb-0 fw-bold"><i class="bi bi-people"></i> Rosa Giocatori</h4>
+                    </div>
+                    <div class="table-responsive" th:if="${squadra.giocatori != null and !squadra.giocatori.isEmpty()}">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Nome e Cognome</th>
+                                    <th>Ruolo</th>
+                                    <th>Nascita</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="giocatore : ${squadra.giocatori}">
+                                    <td class="fw-bold" th:text="${giocatore.nome} + ' ' + ${giocatore.cognome}">Nome</td>
+                                    <td><span class="badge bg-secondary" th:text="${giocatore.ruolo}">Ruolo</span></td>
+                                    <td th:text="${giocatore.dataNascita}">Data</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div th:unless="${squadra.giocatori != null and !squadra.giocatori.isEmpty()}" class="card-body text-center py-5">
+                        <p class="text-muted mb-0">Nessun giocatore registrato in questa squadra.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <hr>
-    <a th:href="@{/squadra}">Vedi tutte le squadre</a> | 
-    <a th:href="@{/}">Home</a>
 </body>
 </html>
