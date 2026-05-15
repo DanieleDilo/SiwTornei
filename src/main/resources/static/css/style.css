@@ -1,31 +1,79 @@
-/* File: src/main/resources/static/css/style.css */
+/* 1. Importiamo un font modernissimo da Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-/* Sfondo generale un po' più caldo rispetto a quello base di Bootstrap */
+/* 2. Sfondo generale e tipografia */
 body {
-    background-color: #f4f6f9;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Inter', sans-serif;
+    background-color: #f4f7fb; /* Un grigio-blu chiarissimo e riposante */
+    color: #2b3445; /* Grigio scuro al posto del nero netto per una lettura migliore */
 }
 
-/* Effetto di sollevamento quando passi col mouse sulle Card (nella Home e Tornei) */
-.card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.15) !important;
-}
-
-/* Stile specifico per centrare la form di login (anziché metterlo nell'HTML) */
-.login-container {
-    max-width: 400px;
-    margin-top: 10vh;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-/* Rendiamo la Navbar leggermente trasparente con effetto vetro */
+/* 3. Effetto "Glassmorphism" (Vetro satinato) per la Navbar */
 .navbar {
-    background-color: rgba(13, 110, 253, 0.95) !important;
-    backdrop-filter: blur(10px);
+    background: rgba(13, 110, 253, 0.85) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* 4. Card eleganti, senza bordi e con ombre morbide */
+.card {
+    border: none !important;
+    border-radius: 16px; /* Bordi molto più arrotondati */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03); /* Ombra leggerissima di base */
+    transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease;
+    overflow: hidden; /* Assicura che i bordi interni non escano dal raggio */
+}
+
+/* Effetto di sollevamento al passaggio del mouse */
+.transition-hover:hover, .card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Sistemiamo gli header delle card per rispettare le rotondità */
+.card-header {
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+/* 5. Pulsanti più accattivanti e "cliccabili" */
+.btn {
+    border-radius: 8px; /* Bordi più morbidi */
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    transition: all 0.2s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px); /* Il bottone sale leggermente */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.btn:active {
+    transform: translateY(0); /* Torna giù quando clicchi */
+}
+
+/* 6. Raffinamento delle Tabelle (es. Classifica) */
+.table {
+    margin-bottom: 0;
+}
+
+.table th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    color: #6c757d;
+    border-bottom: 2px solid #edf2f9;
+}
+
+.table td {
+    border-bottom: 1px solid #edf2f9;
+    padding: 1rem 0.75rem;
+}
+
+/* 7. Centratura Form di Login / Setup */
+.login-container {
+    max-width: 420px;
+    margin: 8vh auto;
 }

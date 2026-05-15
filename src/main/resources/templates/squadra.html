@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>Dettaglio Squadra</title>
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
+
 <body class="bg-light">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm mb-4">
         <div class="container">
@@ -15,21 +17,26 @@
     </nav>
 
     <div class="container" th:if="${squadra != null}">
+        <button onclick="window.history.back()" class="btn btn-outline-secondary mb-3">
+            <i class="bi bi-arrow-left"></i> Indietro
+        </button>
         <div class="row">
             <div class="col-md-4">
                 <div class="card shadow-sm border-0 mb-4 bg-success text-white">
                     <div class="card-body text-center py-5">
                         <i class="bi bi-shield-fill display-1"></i>
                         <h2 class="fw-bold mt-3" th:text="${squadra.nome}">Nome</h2>
-                        <p class="mb-0 fs-5"><i class="bi bi-geo-alt-fill"></i> <span th:text="${squadra.citta}">Città</span></p>
+                        <p class="mb-0 fs-5"><i class="bi bi-geo-alt-fill"></i> <span
+                                th:text="${squadra.citta}">Città</span></p>
                         <p>Dal <span th:text="${squadra.annoFondazione}">1900</span></p>
                     </div>
                 </div>
-                <a th:href="@{'/admin/squadra/' + ${squadra.id} + '/formNewGiocatore'}" class="btn btn-dark w-100 shadow-sm mb-3">
+                <a th:href="@{'/admin/squadra/' + ${squadra.id} + '/formNewGiocatore'}"
+                    class="btn btn-dark w-100 shadow-sm mb-3">
                     <i class="bi bi-person-plus"></i> Aggiungi Giocatore (Admin)
                 </a>
             </div>
-            
+
             <div class="col-md-8">
                 <div class="card shadow-sm border-0">
                     <div class="card-header bg-white p-3">
@@ -46,14 +53,16 @@
                             </thead>
                             <tbody>
                                 <tr th:each="giocatore : ${squadra.giocatori}">
-                                    <td class="fw-bold" th:text="${giocatore.nome} + ' ' + ${giocatore.cognome}">Nome</td>
+                                    <td class="fw-bold" th:text="${giocatore.nome} + ' ' + ${giocatore.cognome}">Nome
+                                    </td>
                                     <td><span class="badge bg-secondary" th:text="${giocatore.ruolo}">Ruolo</span></td>
                                     <td th:text="${giocatore.dataNascita}">Data</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
-                    <div th:unless="${squadra.giocatori != null and !squadra.giocatori.isEmpty()}" class="card-body text-center py-5">
+                    <div th:unless="${squadra.giocatori != null and !squadra.giocatori.isEmpty()}"
+                        class="card-body text-center py-5">
                         <p class="text-muted mb-0">Nessun giocatore registrato in questa squadra.</p>
                     </div>
                 </div>
@@ -61,4 +70,5 @@
         </div>
     </div>
 </body>
+
 </html>

@@ -11,22 +11,25 @@ function TeamSearch() {
             .catch(error => console.error("Errore:", error));
     }, []);
 
-    const squadreFiltrate = squadre.filter(s => 
-        s.nome.toLowerCase().includes(ricerca.toLowerCase()) || 
+    const squadreFiltrate = squadre.filter(s =>
+        s.nome.toLowerCase().includes(ricerca.toLowerCase()) ||
         s.citta.toLowerCase().includes(ricerca.toLowerCase())
     );
 
     return (
         <div className="container">
+            <button onClick={() => window.history.back()} className="btn btn-outline-secondary mb-4 shadow-sm">
+                <i className="bi bi-arrow-left"></i> Indietro
+            </button>
             <div className="card shadow-sm border-0 mb-4">
                 <div className="card-body bg-white p-4 text-center">
                     <h2 className="text-success fw-bold mb-3">
-                        <i className="bi bi-search"></i> Ricerca Squadre Live (React)
+                        <i className="bi bi-search"></i> Ricerca Squadre
                     </h2>
-                    <input 
-                        type="text" 
-                        className="form-control form-control-lg border-success" 
-                        placeholder="Cerca squadra per nome o città..." 
+                    <input
+                        type="text"
+                        className="form-control form-control-lg border-success"
+                        placeholder="Cerca squadra per nome o città..."
                         value={ricerca}
                         onChange={(e) => setRicerca(e.target.value)}
                     />
@@ -53,7 +56,7 @@ function TeamSearch() {
                     </div>
                 )}
             </div>
-            
+
             <div className="mt-4">
                 <a href="/" className="btn btn-link text-decoration-none"><i className="bi bi-arrow-left"></i> Torna alla Home</a>
             </div>
