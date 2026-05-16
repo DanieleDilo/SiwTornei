@@ -4,6 +4,10 @@ import it.uniroma3.siw.siw_tornei.model.Giocatore;
 import it.uniroma3.siw.siw_tornei.model.Partita;
 import it.uniroma3.siw.siw_tornei.model.Squadra;
 import it.uniroma3.siw.siw_tornei.model.Torneo;
+import it.uniroma3.siw.siw_tornei.repository.GiocatoreRepository;
+import it.uniroma3.siw.siw_tornei.repository.PartitaRepository;
+import it.uniroma3.siw.siw_tornei.repository.SquadraRepository;
+import it.uniroma3.siw.siw_tornei.repository.TorneoRepository;
 import it.uniroma3.siw.siw_tornei.service.ArbitroService;
 import it.uniroma3.siw.siw_tornei.service.GiocatoreService;
 import it.uniroma3.siw.siw_tornei.service.PartitaService;
@@ -19,6 +23,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class AdminController {
@@ -27,13 +32,25 @@ public class AdminController {
     private TorneoService torneoService;
 
     @Autowired
+    private TorneoRepository torneoRepository;
+
+    @Autowired
     private SquadraService squadraService;
 
     @Autowired
+    private SquadraRepository squadraRepository;
+
+    @Autowired
     private GiocatoreService giocatoreService;
+    
+     @Autowired
+    private GiocatoreRepository giocatoreRepository;
 
     @Autowired
     private PartitaService partitaService;
+
+    @Autowired
+    private PartitaRepository partitaRepository;
     
     @Autowired
     private ArbitroService arbitroService;
@@ -156,5 +173,85 @@ public class AdminController {
         }
         
         return "redirect:/admin/index";
+    }
+
+    // --- ELIMINA TORNEO ---
+    @PostMapping("/admin/torneo/{id}/delete")
+    public String deleteTorneo(@PathVariable("id") Long id) {
+        torneoRepository.deleteById(id);
+        return "redirect:/torneo"; // Torna alla lista pubblica dei tornei
+    }
+
+    // --- ELIMINA SQUADRA ---
+    @PostMapping("/admin/squadra/{id}/delete")
+    public String deleteSquadra(@PathVariable("id") Long id) {
+        squadraRepository.deleteById(id);
+        return "redirect:/squadra"; // Torna alla lista pubblica (React o Thymeleaf)
+    }
+
+    // --- ELIMINA GIOCATORE ---
+    @PostMapping("/admin/giocatore/{id}/delete")
+    public String deleteGiocatore(@PathVariable("id") Long id) {
+        // Prima di eliminare, recuperiamo la squadra per sapere dove reindirizzare l'admin
+        Giocatore giocatore = giocatoreRepository.findById(id).orElse(null);
+        if (giocatore != null && giocatore.getSquadra() != null) {
+            Long idSquadra = giocatore.getSquadra().getId();
+            giocatoreRepository.deleteById(id);
+            return "redirect:/squadra/" + idSquadra; // Torna alla pagina della squadra
+        }
+        giocatoreRepository.deleteById(id);
+        return "redirect:/squadra";
+    }
+
+    // --- ELIMINA PARTITA ---
+    @PostMapping("/admin/partita/{id}/delete")
+    public String deletePartita(@PathVariable("id") Long id) {
+        partitaRepository.deleteById(id);
+        return "redirect:/partite"; // Torna al calendario
+    }
+
+    // --- AGGIUNGI SQUADRA AL TORNEO ---
+    // Il form invia il torneoId nel percorso e il squadraId come parametro della form (name="squadraId")
+    @PostMapping("/admin/torneo/{id}/addSquadra")
+    public String addSquadraToTorneo(@PathVariable("id") Long torneoId, @RequestParam("squadraId") Long squadraId) {
+        Torneo torneo = torneoRepository.findById(torneoId).orElse(null);
+        Squadra squadra = squadraRepository.findById(squadraId).orElse(null);
+        
+        if (torneo != null && squadra != null) {
+            // Aggiungiamo la squadra alla lista del torneo
+            torneo.getSquadre().add(squadra);
+            
+            // SE la relazione è bidirezionale (es. anche Squadra ha una lista di tornei), 
+            // è buona norma aggiornare entrambi i lati:
+            if (squadra.getTornei() != null) {
+                squadra.getTornei().add(torneo);
+            }
+            
+            // Salva le modifiche nel database
+            torneoRepository.save(torneo);
+        }
+        
+        // Rinfresca la stessa pagina di gestione iscrizioni
+        return "redirect:/admin/torneo/" + torneoId + "/squadre";
+    }
+
+    // --- RIMUOVI SQUADRA DAL TORNEO ---
+    // Il form di rimozione invia entrambi gli ID nel percorso dell'URL
+    @PostMapping("/admin/torneo/{torneoId}/removeSquadra/{squadraId}")
+    public String removeSquadraFromTorneo(@PathVariable("torneoId") Long torneoId, @PathVariable("squadraId") Long squadraId) {
+        Torneo torneo = torneoRepository.findById(torneoId).orElse(null);
+        Squadra squadra = squadraRepository.findById(squadraId).orElse(null);
+        
+        if (torneo != null && squadra != null) {
+            torneo.getSquadre().remove(squadra);
+            
+            if (squadra.getTornei() != null) {
+                squadra.getTornei().remove(torneo);
+            }
+            
+            torneoRepository.save(torneo);
+        }
+        
+        return "redirect:/admin/torneo/" + torneoId + "/squadre";
     }
 }

@@ -18,9 +18,10 @@ function TeamSearch() {
 
     return (
         <div className="container">
-            <button onClick={() => window.history.back()} className="btn btn-outline-secondary mb-4 shadow-sm">
-                <i className="bi bi-arrow-left"></i> Indietro
-            </button>
+            
+            <a href="/" className="btn btn-outline-secondary mb-4 shadow-sm">
+                <i className="bi bi-arrow-left"></i> Torna alla Home
+            </a>
             <div className="card shadow-sm border-0 mb-4">
                 <div className="card-body bg-white p-4 text-center">
                     <h2 className="text-success fw-bold mb-3">
@@ -55,10 +56,6 @@ function TeamSearch() {
                         <p className="text-muted fs-5">Nessuna squadra trovata con questi criteri.</p>
                     </div>
                 )}
-            </div>
-
-            <div className="mt-4">
-                <a href="/" className="btn btn-link text-decoration-none"><i className="bi bi-arrow-left"></i> Torna alla Home</a>
             </div>
         </div>
     );
