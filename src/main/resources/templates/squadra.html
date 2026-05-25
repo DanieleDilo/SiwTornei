@@ -18,9 +18,17 @@
     </nav>
 
     <div class="container" th:if="${squadra != null}">
-        <a th:href="@{/squadra}" class="btn btn-outline-secondary mb-4 shadow-sm">
-            <i class="bi bi-arrow-left"></i> Torna alle Squadre
-        </a>
+        <th:block th:if="${from == 'torneo'}">
+            <a th:href="@{'/torneo/' + ${refId}}" class="btn btn-outline-secondary mb-4 shadow-sm">
+                <i class="bi bi-arrow-left"></i> Torna al Torneo
+            </a>
+        </th:block>
+        
+        <th:block th:unless="${from == 'torneo'}">
+            <a th:href="@{/squadra}" class="btn btn-outline-secondary mb-4 shadow-sm">
+                <i class="bi bi-arrow-left"></i> Torna alla Ricerca Squadre
+            </a>
+        </th:block>
 
         <div class="row">
             <div class="col-md-4">

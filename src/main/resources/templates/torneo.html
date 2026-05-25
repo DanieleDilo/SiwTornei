@@ -71,7 +71,7 @@
                                 <tr th:each="riga, iterStat : ${classifica}">
                                     <td class="fw-bold text-muted" th:text="${iterStat.count}">1</td>
                                     <td class="text-start fw-bold text-primary">
-                                        <a th:href="@{'/squadra/' + ${riga.squadra.id}}" class="text-decoration-none" th:text="${riga.squadra.nome}">Nome</a>
+                                        <a th:href="@{'/squadra/' + ${riga.squadra.id}(from='torneo', refId=${torneo.id})}" class="text-decoration-none" th:text="${riga.squadra.nome}">Nome</a>
                                     </td>
                                     <td class="fw-bold fs-5" th:text="${riga.punti}">0</td>
                                     <td th:text="${riga.partiteGiocate}">0</td>
