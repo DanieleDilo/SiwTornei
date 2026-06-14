@@ -56,6 +56,14 @@
                         <input type="text" class="form-control" th:field="*{luogo}" placeholder="Es: Stadio Olimpico" required />
                     </div>
 
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Arbitro dell'Incontro</label>
+                        <select class="form-select" th:field="*{arbitro}" required>
+                            <option value="" disabled selected>-- Seleziona un Arbitro --</option>
+                            <option th:each="a : ${arbitri}" th:value="${a.id}" th:text="${a.nome} + ' ' + ${a.cognome}"></option>
+                        </select>
+                    </div>
+
                     <button type="submit" class="btn btn-danger w-100 py-2 fw-bold">Aggiungi a Calendario</button>
                 </form>
             </div>

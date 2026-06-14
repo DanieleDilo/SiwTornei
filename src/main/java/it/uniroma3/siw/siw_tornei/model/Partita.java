@@ -11,26 +11,26 @@ public class Partita {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private LocalDateTime dataOra; // [cite: 43]
-    private String luogo; // [cite: 44]
+    private LocalDateTime dataOra; 
+    private String luogo; 
     
-    private Integer goalsHome; // [cite: 45]
-    private Integer goalsAway; // [cite: 46]
+    private Integer goalsHome;
+    private Integer goalsAway; 
 
     @Enumerated(EnumType.STRING)
-    private StatoPartita stato; // 
+    private StatoPartita stato; 
 
     @ManyToOne
-    private Torneo torneo; // [cite: 50]
+    private Torneo torneo;
 
     @ManyToOne
-    private Squadra squadraCasa; // [cite: 51]
+    private Squadra squadraCasa;
 
     @ManyToOne
-    private Squadra squadraTrasferta; // [cite: 51]
+    private Squadra squadraTrasferta;
 
     @ManyToOne
-    private Arbitro arbitro; // [cite: 52]
+    private Arbitro arbitro;
 
     // Getter e Setter
     public Long getId() { return id; }

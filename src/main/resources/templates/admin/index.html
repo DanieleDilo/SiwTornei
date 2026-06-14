@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="it">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,15 +9,18 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
+
 <body class="bg-light">
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
         <div class="container">
             <a class="navbar-brand fw-bold" href="#"><i class="bi bi-speedometer2"></i> Dashboard Admin</a>
             <div class="d-flex gap-2">
-                <a class="btn btn-outline-light btn-sm" th:href="@{/}"><i class="bi bi-house-door"></i> Sito Pubblico</a>
+                <a class="btn btn-outline-light btn-sm" th:href="@{/}"><i class="bi bi-house-door"></i> Sito
+                    Pubblico</a>
                 <form th:action="@{/logout}" method="post" class="m-0">
-                    <button type="submit" class="btn btn-danger btn-sm"><i class="bi bi-box-arrow-right"></i> Esci</button>
+                    <button type="submit" class="btn btn-danger btn-sm"><i class="bi bi-box-arrow-right"></i>
+                        Esci</button>
                 </form>
             </div>
         </div>
@@ -29,7 +33,7 @@
         </div>
 
         <div class="row g-4 mt-2">
-            
+
             <div class="col-md-6">
                 <div class="card shadow-sm h-100">
                     <div class="card-header bg-primary text-white fw-bold">
@@ -42,8 +46,12 @@
                         <a th:href="@{/admin/formNewSquadra}" class="btn btn-outline-success text-start">
                             <i class="bi bi-shield"></i> Inserisci una Nuova Squadra
                         </a>
+                        <a th:href="@{/admin/formNewArbitro}" class="btn btn-outline-secondary btn-sm mt-2">
+                            <i class="bi bi-person-plus-fill"></i> Registra un Arbitro
+                        </a>
                         <div class="text-muted small mt-auto pt-3 border-top">
-                            <i class="bi bi-info-circle"></i> Per aggiungere giocatori o iscrivere squadre, naviga nelle liste pubbliche e usa i comandi admin presenti in quelle pagine.
+                            <i class="bi bi-info-circle"></i> Per aggiungere giocatori o iscrivere squadre, naviga nelle
+                            liste pubbliche e usa i comandi admin presenti in quelle pagine.
                         </div>
                     </div>
                 </div>
@@ -59,7 +67,8 @@
                             <i class="bi bi-clock-history"></i> Programma una Partita
                         </a>
                         <div class="alert alert-secondary mt-auto mb-0 small">
-                            <i class="bi bi-lightbulb"></i> Per inserire i risultati di una partita conclusa, vai nella lista del calendario e clicca su "Modifica Risultato".
+                            <i class="bi bi-lightbulb"></i> Per inserire i risultati di una partita conclusa, vai nella
+                            lista del calendario e clicca su "Modifica Risultato".
                         </div>
                     </div>
                 </div>
@@ -69,4 +78,5 @@
     </div>
 
 </body>
+
 </html>

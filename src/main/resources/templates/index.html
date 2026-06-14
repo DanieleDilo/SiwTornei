@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="it">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="it">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -13,9 +13,18 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
         <div class="container">
             <a class="navbar-brand fw-bold" th:href="@{/}"><i class="bi bi-trophy-fill text-warning"></i> SIW Tornei</a>
-            <div class="d-flex">
-                <a class="btn btn-outline-light btn-sm" th:href="@{/admin/index}">
+            <div class="d-flex align-items-center gap-2 ms-auto">
+                <span sec:authorize="isAuthenticated()" class="text-white small">
+                    Benvenuto, <strong sec:authentication="name">utente</strong>
+                </span>
+                <a sec:authorize="hasAuthority('ADMIN')" class="btn btn-outline-light btn-sm" th:href="@{/admin/index}">
                     <i class="bi bi-person-lock"></i> Area Admin
+                </a>
+                <a sec:authorize="isAuthenticated()" class="btn btn-light btn-sm" th:href="@{/logout}">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </a>
+                <a sec:authorize="isAnonymous()" class="btn btn-outline-light btn-sm" th:href="@{/login}">
+                    <i class="bi bi-box-arrow-in-right"></i> Accedi
                 </a>
             </div>
         </div>
@@ -23,9 +32,24 @@
 
     <div class="container mt-5">
         
-        <div class="p-5 text-center bg-white rounded-3 shadow-sm border mb-5">
+        <div sec:authorize="isAnonymous()" class="p-5 text-center bg-white rounded-3 shadow-sm border mb-5">
             <h1 class="display-5 fw-bold text-primary">Benvenuto nel Portale</h1>
             <p class="lead text-muted">Scopri le squadre, naviga tra i tornei e segui i risultati in diretta.</p>
+
+            <div class="d-flex flex-column flex-md-row justify-content-center gap-3 mt-4">
+                <a class="btn btn-primary btn-lg px-4" th:href="@{/login}">Accedi</a>
+                <a class="btn btn-success btn-lg px-4" th:href="@{/register}">Registrati</a>
+                <a class="btn btn-outline-dark btn-lg px-4" th:href="@{/oauth2/authorization/google}">
+                    <i class="bi bi-google me-2"></i> Google
+                </a>
+            </div>
+
+            <p class="text-muted small mt-3 mb-0">Usa le credenziali locali o il login Google. L'area admin è accessibile solo agli account autorizzati.</p>
+        </div>
+
+        <div sec:authorize="isAuthenticated()" class="p-5 text-center bg-white rounded-3 shadow-sm border mb-5">
+            <h1 class="display-5 fw-bold text-primary">Bentornato, <span sec:authentication="name">utente</span>!</h1>
+            <p class="lead text-muted">Naviga i tornei, le squadre e la tua area riservata con un click.</p>
         </div>
 
         <div class="row g-4 text-center">
