@@ -1,7 +1,9 @@
 package it.uniroma3.siw.siw_tornei.service;
 
+import it.uniroma3.siw.siw_tornei.model.Partita;
 import it.uniroma3.siw.siw_tornei.model.Squadra;
 import it.uniroma3.siw.siw_tornei.model.Torneo;
+import it.uniroma3.siw.siw_tornei.repository.PartitaRepository;
 import it.uniroma3.siw.siw_tornei.repository.SquadraRepository;
 import it.uniroma3.siw.siw_tornei.repository.TorneoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,12 @@ public class TorneoService {
 
     @Autowired
     private SquadraRepository squadraRepository;
+
+    @Autowired
+    private PartitaRepository partitaRepository;
+
+    @Autowired
+    private PartitaService partitaService;
 
     /**
      * Salva un nuovo torneo nel sistema.
@@ -81,12 +89,31 @@ public class TorneoService {
     public void deleteTorneo(Long id) {
         Torneo torneo = this.torneoRepository.findById(id).orElse(null);
         if (torneo != null) {
-            // Remove the associations on the owning side (Squadra)
+            // 1. Delete all matches of this tournament
+            List<Partita> partite = this.partitaRepository.findByTorneo(torneo);
+            if (partite != null) {
+                for (Partita p : partite) {
+                    this.partitaService.deletePartita(p.getId());
+                }
+            }
+            // 2. Remove the associations on the owning side (Squadra)
             for (Squadra s : torneo.getSquadre()) {
                 s.getTornei().remove(torneo);
                 this.squadraRepository.save(s);
             }
+            // 3. Delete tournament itself
             this.torneoRepository.delete(torneo);
+        }
+    }
+
+    @Transactional
+    public void updateTorneo(Long id, Torneo torneoModificato) {
+        Torneo torneo = this.torneoRepository.findById(id).orElse(null);
+        if (torneo != null) {
+            torneo.setNome(torneoModificato.getNome());
+            torneo.setAnno(torneoModificato.getAnno());
+            torneo.setDescrizione(torneoModificato.getDescrizione());
+            this.torneoRepository.save(torneo);
         }
     }
 }

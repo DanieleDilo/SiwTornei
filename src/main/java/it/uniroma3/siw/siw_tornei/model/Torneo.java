@@ -1,6 +1,9 @@
 package it.uniroma3.siw.siw_tornei.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.util.Objects;
 import java.util.List;
 
@@ -11,7 +14,11 @@ public class Torneo {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @NotBlank(message = "Il nome del torneo è obbligatorio")
     private String nome;
+
+    @NotNull(message = "L'anno del torneo è obbligatorio")
+    @Min(value = 1800, message = "L'anno deve essere valido")
     private Integer anno;
 
     @Column(length = 500)

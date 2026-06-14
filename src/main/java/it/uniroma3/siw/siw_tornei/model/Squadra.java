@@ -1,6 +1,9 @@
 package it.uniroma3.siw.siw_tornei.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Objects;
 
@@ -11,8 +14,14 @@ public class Squadra {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @NotBlank(message = "Il nome del club è obbligatorio")
     private String nome;
+
+    @NotNull(message = "L'anno di fondazione è obbligatorio")
+    @Min(value = 1800, message = "L'anno di fondazione deve essere valido")
     private Integer annoFondazione;
+
+    @NotBlank(message = "La città è obbligatoria")
     private String citta;
 
     // Una squadra partecipa a molti tornei, e un torneo ha molte squadre

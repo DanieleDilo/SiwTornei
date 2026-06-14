@@ -1,6 +1,9 @@
 package it.uniroma3.siw.siw_tornei.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -11,11 +14,20 @@ public class Giocatore {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private String nome; // [cite: 35]
-    private String cognome; // [cite: 36]
-    private LocalDate dataNascita; // [cite: 37]
-    private String ruolo; // [cite: 38]
-    private Float altezza; // [cite: 39]
+    @NotBlank(message = "Il nome è obbligatorio")
+    private String nome;
+
+    @NotBlank(message = "Il cognome è obbligatorio")
+    private String cognome;
+
+    @NotNull(message = "La data di nascita è obbligatoria")
+    private LocalDate dataNascita;
+
+    @NotBlank(message = "Il ruolo è obbligatorio")
+    private String ruolo;
+
+    @Min(value = 0, message = "L'altezza non può essere negativa")
+    private Float altezza;
 
     @ManyToOne // 
     private Squadra squadra;

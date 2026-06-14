@@ -43,4 +43,15 @@ public class PartitaService {
             this.partitaRepository.delete(partita);
         }
     }
+
+    @Transactional
+    public void updateRisultato(Long id, Partita datiAggiornati) {
+        Partita partita = this.partitaRepository.findById(id).orElse(null);
+        if (partita != null) {
+            partita.setGoalsHome(datiAggiornati.getGoalsHome());
+            partita.setGoalsAway(datiAggiornati.getGoalsAway());
+            partita.setStato(it.uniroma3.siw.siw_tornei.model.StatoPartita.PLAYED);
+            this.partitaRepository.save(partita);
+        }
+    }
 }

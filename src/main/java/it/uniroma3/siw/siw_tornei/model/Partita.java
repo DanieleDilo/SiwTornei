@@ -1,6 +1,9 @@
 package it.uniroma3.siw.siw_tornei.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -11,25 +14,35 @@ public class Partita {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @NotNull(message = "La data e l'ora della partita sono obbligatorie")
     private LocalDateTime dataOra; 
+
+    @NotBlank(message = "Il luogo della partita è obbligatorio")
     private String luogo; 
     
+    @Min(value = 0, message = "I gol non possono essere negativi")
     private Integer goalsHome;
+
+    @Min(value = 0, message = "I gol non possono essere negativi")
     private Integer goalsAway; 
 
     @Enumerated(EnumType.STRING)
     private StatoPartita stato; 
 
     @ManyToOne
+    @NotNull(message = "Il torneo è obbligatorio")
     private Torneo torneo;
 
     @ManyToOne
+    @NotNull(message = "La squadra di casa è obbligatoria")
     private Squadra squadraCasa;
 
     @ManyToOne
+    @NotNull(message = "La squadra in trasferta è obbligatoria")
     private Squadra squadraTrasferta;
 
     @ManyToOne
+    @NotNull(message = "L'arbitro è obbligatorio")
     private Arbitro arbitro;
 
     // Getter e Setter

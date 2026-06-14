@@ -14,9 +14,11 @@ import it.uniroma3.siw.siw_tornei.service.PerformanceAnalysisService;
 
 import java.util.List;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -51,7 +53,10 @@ public class AdminController {
     }
 
     @PostMapping("/admin/squadra")
-    public String newSquadra(@ModelAttribute("squadra") Squadra squadra) {
+    public String newSquadra(@Valid @ModelAttribute("squadra") Squadra squadra, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "admin/formNewSquadra";
+        }
         this.squadraService.saveSquadra(squadra);
         return "redirect:/squadra/" + squadra.getId();
     }
@@ -71,7 +76,10 @@ public class AdminController {
 
     // Salva il torneo nel DB
     @PostMapping("/admin/torneo")
-    public String newTorneo(@ModelAttribute("torneo") Torneo torneo) {
+    public String newTorneo(@Valid @ModelAttribute("torneo") Torneo torneo, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "admin/formNewTorneo";
+        }
         this.torneoService.saveTorneo(torneo);
         return "redirect:/torneo/" + torneo.getId();
     }
@@ -113,7 +121,12 @@ public class AdminController {
     // 2. Salva il giocatore
     @PostMapping("/admin/squadra/{squadraId}/giocatore")
     public String newGiocatore(@PathVariable("squadraId") Long squadraId,
-            @ModelAttribute("giocatore") Giocatore giocatore) {
+            @Valid @ModelAttribute("giocatore") Giocatore giocatore, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            Squadra squadra = this.squadraService.findById(squadraId);
+            model.addAttribute("squadra", squadra);
+            return "admin/formNewGiocatore";
+        }
         this.giocatoreService.saveGiocatoreInSquadra(giocatore, squadraId);
         return "redirect:/squadra/" + squadraId;
     }
@@ -132,7 +145,13 @@ public class AdminController {
 
     // 2. Salva la partita nel DB
     @PostMapping("/admin/partita")
-    public String newPartita(@ModelAttribute("partita") Partita partita) {
+    public String newPartita(@Valid @ModelAttribute("partita") Partita partita, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("tornei", this.torneoService.findAll());
+            model.addAttribute("squadre", this.squadraService.findAll());
+            model.addAttribute("arbitri", this.arbitroService.findAll());
+            return "admin/formNewPartita";
+        }
         // Di default, una nuova partita è "SCHEDULED" (programmata)
         partita.setStato(it.uniroma3.siw.siw_tornei.model.StatoPartita.SCHEDULED);
 
@@ -150,17 +169,11 @@ public class AdminController {
 
     // 2. Salva il risultato nel DB e segna la partita come conclusa (PLAYED)
     @PostMapping("/admin/partita/{id}/risultato")
-    public String updateRisultato(@PathVariable("id") Long id, @ModelAttribute("partita") Partita datiAggiornati) {
-        Partita partitaEsistente = this.partitaService.findById(id);
-
-        if (partitaEsistente != null) {
-            partitaEsistente.setGoalsHome(datiAggiornati.getGoalsHome());
-            partitaEsistente.setGoalsAway(datiAggiornati.getGoalsAway());
-            partitaEsistente.setStato(it.uniroma3.siw.siw_tornei.model.StatoPartita.PLAYED); // Cambia stato!
-
-            this.partitaService.savePartita(partitaEsistente);
+    public String updateRisultato(@PathVariable("id") Long id, @Valid @ModelAttribute("partita") Partita datiAggiornati, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "admin/formUpdatePartita";
         }
-
+        this.partitaService.updateRisultato(id, datiAggiornati);
         return "redirect:/admin/index";
     }
 
@@ -222,7 +235,10 @@ public class AdminController {
 
     // 2. Salva l'arbitro compilato nel database
     @PostMapping("/admin/arbitro")
-    public String saveArbitro(@ModelAttribute("arbitro") Arbitro arbitro) {
+    public String saveArbitro(@Valid @ModelAttribute("arbitro") Arbitro arbitro, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "admin/formNewArbitro";
+        }
         this.arbitroService.saveArbitro(arbitro);
         return "redirect:/admin/index";
     }
@@ -239,16 +255,12 @@ public class AdminController {
     }
 
     @PostMapping("/admin/torneo/{id}/edit")
-    public String editTorneo(@PathVariable("id") Long id, @ModelAttribute("torneo") Torneo torneoModificato) {
-        Torneo torneo = this.torneoService.findById(id);
-        if (torneo != null) {
-            torneo.setNome(torneoModificato.getNome());
-            torneo.setAnno(torneoModificato.getAnno());
-            torneo.setDescrizione(torneoModificato.getDescrizione());
-            this.torneoService.saveTorneo(torneo);
-            return "redirect:/torneo/" + torneo.getId();
+    public String editTorneo(@PathVariable("id") Long id, @Valid @ModelAttribute("torneo") Torneo torneoModificato, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "admin/formEditTorneo";
         }
-        return "redirect:/torneo";
+        this.torneoService.updateTorneo(id, torneoModificato);
+        return "redirect:/torneo/" + id;
     }
 
     // --- MODIFICA SQUADRA ---
@@ -263,16 +275,12 @@ public class AdminController {
     }
 
     @PostMapping("/admin/squadra/{id}/edit")
-    public String editSquadra(@PathVariable("id") Long id, @ModelAttribute("squadra") Squadra squadraModificata) {
-        Squadra squadra = this.squadraService.findById(id);
-        if (squadra != null) {
-            squadra.setNome(squadraModificata.getNome());
-            squadra.setAnnoFondazione(squadraModificata.getAnnoFondazione());
-            squadra.setCitta(squadraModificata.getCitta());
-            this.squadraService.saveSquadra(squadra);
-            return "redirect:/squadra/" + squadra.getId();
+    public String editSquadra(@PathVariable("id") Long id, @Valid @ModelAttribute("squadra") Squadra squadraModificata, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "admin/formEditSquadra";
         }
-        return "redirect:/squadra";
+        this.squadraService.updateSquadra(id, squadraModificata);
+        return "redirect:/squadra/" + id;
     }
 
     // --- MODIFICA GIOCATORE ---
@@ -287,18 +295,14 @@ public class AdminController {
     }
 
     @PostMapping("/admin/giocatore/{id}/edit")
-    public String editGiocatore(@PathVariable("id") Long id, @ModelAttribute("giocatore") Giocatore giocatoreModificato) {
+    public String editGiocatore(@PathVariable("id") Long id, @Valid @ModelAttribute("giocatore") Giocatore giocatoreModificato, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "admin/formEditGiocatore";
+        }
+        this.giocatoreService.updateGiocatore(id, giocatoreModificato);
         Giocatore giocatore = this.giocatoreService.findById(id);
-        if (giocatore != null) {
-            giocatore.setNome(giocatoreModificato.getNome());
-            giocatore.setCognome(giocatoreModificato.getCognome());
-            giocatore.setDataNascita(giocatoreModificato.getDataNascita());
-            giocatore.setRuolo(giocatoreModificato.getRuolo());
-            giocatore.setAltezza(giocatoreModificato.getAltezza());
-            this.giocatoreService.saveGiocatore(giocatore);
-            if (giocatore.getSquadra() != null) {
-                return "redirect:/squadra/" + giocatore.getSquadra().getId();
-            }
+        if (giocatore != null && giocatore.getSquadra() != null) {
+            return "redirect:/squadra/" + giocatore.getSquadra().getId();
         }
         return "redirect:/squadra";
     }

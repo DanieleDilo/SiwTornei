@@ -1,6 +1,7 @@
 package it.uniroma3.siw.siw_tornei.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import java.util.Objects;
 import java.util.List;
 
@@ -11,10 +12,14 @@ public class Arbitro {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @NotBlank(message = "Il nome è obbligatorio")
     private String nome;
+
+    @NotBlank(message = "Il cognome è obbligatorio")
     private String cognome;
     
     @Column(unique = true) // Il codice deve essere unico per ogni arbitro
+    @NotBlank(message = "Il codice arbitrale è obbligatorio")
     private String codiceArbitrale;
 
     // Relazione con le partite: un arbitro può dirigere molte partite

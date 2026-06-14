@@ -21,8 +21,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            // Disabilitiamo il CSRF per le form
-            .csrf(csrf -> csrf.disable())
+            // Abilitiamo il CSRF per tutti tranne che per le API stateless
+            .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"))
 
             .authorizeHttpRequests(auth -> auth
                 // 1. L'area admin è accessibile SOLO a chi ha ruolo ADMIN

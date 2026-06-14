@@ -42,4 +42,17 @@ public class GiocatoreService {
     public void deleteGiocatore(Long id) {
         this.giocatoreRepository.deleteById(id);
     }
+
+    @Transactional
+    public void updateGiocatore(Long id, Giocatore giocatoreModificato) {
+        Giocatore giocatore = this.giocatoreRepository.findById(id).orElse(null);
+        if (giocatore != null) {
+            giocatore.setNome(giocatoreModificato.getNome());
+            giocatore.setCognome(giocatoreModificato.getCognome());
+            giocatore.setDataNascita(giocatoreModificato.getDataNascita());
+            giocatore.setRuolo(giocatoreModificato.getRuolo());
+            giocatore.setAltezza(giocatoreModificato.getAltezza());
+            this.giocatoreRepository.save(giocatore);
+        }
+    }
 }

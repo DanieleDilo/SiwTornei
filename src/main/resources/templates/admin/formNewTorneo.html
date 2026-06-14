@@ -25,11 +25,13 @@
                 <form th:action="@{/admin/torneo}" method="POST" th:object="${torneo}">
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Nome del Torneo</label>
-                        <input type="text" class="form-control" th:field="*{nome}" placeholder="Es: Torneo Estivo SIW" required />
+                        <input type="text" class="form-control" th:classappend="${#fields.hasErrors('nome')} ? 'is-invalid'" th:field="*{nome}" placeholder="Es: Torneo Estivo SIW" />
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}">Errore</div>
                     </div>
                     <div class="mb-4">
                         <label class="form-label fw-semibold">Anno Edizione</label>
-                        <input type="number" class="form-control" th:field="*{anno}" placeholder="Es: 2026" required />
+                        <input type="number" class="form-control" th:classappend="${#fields.hasErrors('anno')} ? 'is-invalid'" th:field="*{anno}" placeholder="Es: 2026" />
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('anno')}" th:errors="*{anno}">Errore</div>
                     </div>
                     <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">Salva Torneo</button>
                 </form>

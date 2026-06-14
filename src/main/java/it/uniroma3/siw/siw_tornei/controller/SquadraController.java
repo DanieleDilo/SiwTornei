@@ -15,15 +15,12 @@ public class SquadraController {
 
     @Autowired
     private SquadraService squadraService;
-
-    @Autowired
-    private SquadraRepository squadraRepository;
     
 
     @GetMapping("/squadra")
     public String getSquadre(Model model) {
         model.addAttribute("squadre", this.squadraService.findAll());
-        return "squadre.html";
+        return "squadre";
     }
 
     @GetMapping("/squadra/{id}")
@@ -33,13 +30,17 @@ public class SquadraController {
             @RequestParam(value = "refId", required = false) Long refId,
             Model model) {
             
-        Squadra squadra = squadraRepository.findById(id).orElse(null);
+        Squadra squadra = this.squadraService.findById(id);
+        if (squadra == null) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                org.springframework.http.HttpStatus.NOT_FOUND, "Squadra non trovata");
+        }
         model.addAttribute("squadra", squadra);
         
         // Passiamo alla vista i parametri di provenienza (se esistono)
         model.addAttribute("from", from);
         model.addAttribute("refId", refId);
         
-        return "squadra.html";
+        return "squadra";
     }
 }

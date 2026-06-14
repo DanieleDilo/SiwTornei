@@ -1,8 +1,10 @@
 package it.uniroma3.siw.siw_tornei.service;
 
+import it.uniroma3.siw.siw_tornei.model.Partita;
 import it.uniroma3.siw.siw_tornei.model.Giocatore;
 import it.uniroma3.siw.siw_tornei.model.Squadra;
 import it.uniroma3.siw.siw_tornei.repository.GiocatoreRepository;
+import it.uniroma3.siw.siw_tornei.repository.PartitaRepository;
 import it.uniroma3.siw.siw_tornei.repository.SquadraRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,12 @@ public class SquadraService {
 
     @Autowired
     private GiocatoreRepository giocatoreRepository;
+
+    @Autowired
+    private PartitaRepository partitaRepository;
+
+    @Autowired
+    private PartitaService partitaService;
 
     @Transactional
     public void saveSquadra(Squadra squadra) {
@@ -43,14 +51,33 @@ public class SquadraService {
     public void deleteSquadra(Long id) {
         Squadra squadra = this.squadraRepository.findById(id).orElse(null);
         if (squadra != null) {
-            // Disassociate players from the team
+            // 1. Delete all matches of this team
+            List<Partita> partite = this.partitaRepository.findBySquadra(squadra);
+            if (partite != null) {
+                for (Partita p : partite) {
+                    this.partitaService.deletePartita(p.getId());
+                }
+            }
+            // 2. Disassociate players from the team
             if (squadra.getGiocatori() != null) {
                 for (Giocatore g : squadra.getGiocatori()) {
                     g.setSquadra(null);
                     this.giocatoreRepository.save(g);
                 }
             }
+            // 3. Delete team
             this.squadraRepository.delete(squadra);
+        }
+    }
+
+    @Transactional
+    public void updateSquadra(Long id, Squadra squadraModificata) {
+        Squadra squadra = this.squadraRepository.findById(id).orElse(null);
+        if (squadra != null) {
+            squadra.setNome(squadraModificata.getNome());
+            squadra.setAnnoFondazione(squadraModificata.getAnnoFondazione());
+            squadra.setCitta(squadraModificata.getCitta());
+            this.squadraRepository.save(squadra);
         }
     }
 }

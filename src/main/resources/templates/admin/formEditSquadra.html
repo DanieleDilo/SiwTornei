@@ -25,15 +25,18 @@
                 <form th:action="@{/admin/squadra/{id}/edit(id=${squadra.id})}" method="POST" th:object="${squadra}">
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Nome Club</label>
-                        <input type="text" class="form-control" th:field="*{nome}" placeholder="Es: F.C. Roma Tre" required />
+                        <input type="text" class="form-control" th:classappend="${#fields.hasErrors('nome')} ? 'is-invalid'" th:field="*{nome}" placeholder="Es: F.C. Roma Tre" />
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}">Errore</div>
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Città</label>
-                        <input type="text" class="form-control" th:field="*{citta}" placeholder="Es: Roma" required />
+                        <input type="text" class="form-control" th:classappend="${#fields.hasErrors('citta')} ? 'is-invalid'" th:field="*{citta}" placeholder="Es: Roma" />
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('citta')}" th:errors="*{citta}">Errore</div>
                     </div>
                     <div class="mb-4">
                         <label class="form-label fw-semibold">Anno di Fondazione</label>
-                        <input type="number" class="form-control" th:field="*{annoFondazione}" placeholder="Es: 2010" required />
+                        <input type="number" class="form-control" th:classappend="${#fields.hasErrors('annoFondazione')} ? 'is-invalid'" th:field="*{annoFondazione}" placeholder="Es: 2010" />
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('annoFondazione')}" th:errors="*{annoFondazione}">Errore</div>
                     </div>
                     <button type="submit" class="btn btn-success w-100 py-2 fw-bold">Salva Modifiche</button>
                 </form>
