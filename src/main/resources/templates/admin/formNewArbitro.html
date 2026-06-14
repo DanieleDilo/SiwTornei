@@ -32,17 +32,20 @@
                     
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Nome</label>
-                        <input type="text" class="form-control" th:field="*{nome}" placeholder="Es: Pierluigi" required />
+                        <input type="text" class="form-control" th:classappend="${#fields.hasErrors('nome')} ? 'is-invalid'" th:field="*{nome}" placeholder="Es: Pierluigi" />
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}">Errore</div>
                     </div>
                     
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Cognome</label>
-                        <input type="text" class="form-control" th:field="*{cognome}" placeholder="Es: Collina" required />
+                        <input type="text" class="form-control" th:classappend="${#fields.hasErrors('cognome')} ? 'is-invalid'" th:field="*{cognome}" placeholder="Es: Collina" />
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('cognome')}" th:errors="*{cognome}">Errore</div>
                     </div>
                     
                     <div class="mb-4">
                         <label class="form-label fw-semibold">Codice Arbitrale ufficiale</label>
-                        <input type="text" class="form-control" th:field="*{codiceArbitrale}" placeholder="Es: AIA-12345" required />
+                        <input type="text" class="form-control" th:classappend="${#fields.hasErrors('codiceArbitrale')} ? 'is-invalid'" th:field="*{codiceArbitrale}" placeholder="Es: AIA-12345" />
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('codiceArbitrale')}" th:errors="*{codiceArbitrale}">Errore</div>
                     </div>
                     
                     <button type="submit" class="btn btn-secondary w-100 py-2 fw-bold shadow-sm">

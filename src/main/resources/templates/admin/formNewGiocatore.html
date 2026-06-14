@@ -28,24 +28,28 @@
                 <form th:action="@{'/admin/squadra/' + ${squadra.id} + '/giocatore'}" method="POST" th:object="${giocatore}">
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Nome</label>
-                        <input type="text" class="form-control" th:field="*{nome}" required />
+                        <input type="text" class="form-control" th:classappend="${#fields.hasErrors('nome')} ? 'is-invalid'" th:field="*{nome}" />
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('nome')}" th:errors="*{nome}">Errore</div>
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Cognome</label>
-                        <input type="text" class="form-control" th:field="*{cognome}" required />
+                        <input type="text" class="form-control" th:classappend="${#fields.hasErrors('cognome')} ? 'is-invalid'" th:field="*{cognome}" />
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('cognome')}" th:errors="*{cognome}">Errore</div>
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Ruolo Tecnico</label>
-                        <select class="form-select" th:field="*{ruolo}">
+                        <select class="form-select" th:classappend="${#fields.hasErrors('ruolo')} ? 'is-invalid'" th:field="*{ruolo}">
                             <option value="PORTIERE">Portiere</option>
                             <option value="DIFENSORE">Difensore</option>
                             <option value="CENTROCAMPISTA">Centrocampista</option>
                             <option value="ATTACCANTE">Attaccante</option>
                         </select>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('ruolo')}" th:errors="*{ruolo}">Errore</div>
                     </div>
                     <div class="mb-4">
                         <label class="form-label fw-semibold">Data di Nascita</label>
-                        <input type="date" class="form-control" th:field="*{dataNascita}" required />
+                        <input type="date" class="form-control" th:classappend="${#fields.hasErrors('dataNascita')} ? 'is-invalid'" th:field="*{dataNascita}" />
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('dataNascita')}" th:errors="*{dataNascita}">Errore</div>
                     </div>
                     <button type="submit" class="btn btn-dark w-100 py-2 fw-bold">Completa Iscrizione</button>
                 </form>

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -21,6 +22,7 @@ public class Giocatore {
     private String cognome;
 
     @NotNull(message = "La data di nascita è obbligatoria")
+    @Past(message = "La data di nascita deve essere nel passato")
     private LocalDate dataNascita;
 
     @NotBlank(message = "Il ruolo è obbligatorio")

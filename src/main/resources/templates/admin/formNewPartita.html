@@ -26,42 +26,51 @@
                     
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Seleziona Torneo Competizione</label>
-                        <select class="form-select" th:field="*{torneo}">
+                        <select class="form-select" th:classappend="${#fields.hasErrors('torneo')} ? 'is-invalid'" th:field="*{torneo}">
+                            <option value="" disabled selected>-- Seleziona un Torneo --</option>
                             <option th:each="t : ${tornei}" th:value="${t.id}" th:text="${t.nome} + ' (' + ${t.anno} + ')'"></option>
                         </select>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('torneo')}" th:errors="*{torneo}">Errore</div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label class="form-label fw-semibold">Squadra in Casa</label>
-                            <select class="form-select" th:field="*{squadraCasa}">
+                            <select class="form-select" th:classappend="${#fields.hasErrors('squadraCasa')} ? 'is-invalid'" th:field="*{squadraCasa}">
+                                <option value="" disabled selected>-- Seleziona Squadra Casa --</option>
                                 <option th:each="s : ${squadre}" th:value="${s.id}" th:text="${s.nome}"></option>
                             </select>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('squadraCasa')}" th:errors="*{squadraCasa}">Errore</div>
                         </div>
                         <div class="col-md-6">
                             <label class="form-label fw-semibold">Squadra in Trasferta</label>
-                            <select class="form-select" th:field="*{squadraTrasferta}">
+                            <select class="form-select" th:classappend="${#fields.hasErrors('squadraTrasferta')} ? 'is-invalid'" th:field="*{squadraTrasferta}">
+                                <option value="" disabled selected>-- Seleziona Squadra Trasferta --</option>
                                 <option th:each="s : ${squadre}" th:value="${s.id}" th:text="${s.nome}"></option>
                             </select>
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('squadraTrasferta')}" th:errors="*{squadraTrasferta}">Errore</div>
                         </div>
                     </div>
 
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Data e Ora Calcio d'Inizio</label>
-                        <input type="datetime-local" class="form-control" th:field="*{dataOra}" required />
+                        <input type="datetime-local" class="form-control" th:classappend="${#fields.hasErrors('dataOra')} ? 'is-invalid'" th:field="*{dataOra}" />
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('dataOra')}" th:errors="*{dataOra}">Errore</div>
                     </div>
 
                     <div class="mb-4">
                         <label class="form-label fw-semibold">Stadio / Luogo dell'Incontro</label>
-                        <input type="text" class="form-control" th:field="*{luogo}" placeholder="Es: Stadio Olimpico" required />
+                        <input type="text" class="form-control" th:classappend="${#fields.hasErrors('luogo')} ? 'is-invalid'" th:field="*{luogo}" placeholder="Es: Stadio Olimpico" />
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('luogo')}" th:errors="*{luogo}">Errore</div>
                     </div>
 
                     <div class="mb-4">
                         <label class="form-label fw-semibold">Arbitro dell'Incontro</label>
-                        <select class="form-select" th:field="*{arbitro}" required>
+                        <select class="form-select" th:classappend="${#fields.hasErrors('arbitro')} ? 'is-invalid'" th:field="*{arbitro}">
                             <option value="" disabled selected>-- Seleziona un Arbitro --</option>
                             <option th:each="a : ${arbitri}" th:value="${a.id}" th:text="${a.nome} + ' ' + ${a.cognome}"></option>
                         </select>
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('arbitro')}" th:errors="*{arbitro}">Errore</div>
                     </div>
 
                     <button type="submit" class="btn btn-danger w-100 py-2 fw-bold">Aggiungi a Calendario</button>

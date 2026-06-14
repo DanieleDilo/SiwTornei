@@ -54,6 +54,17 @@ public class AdminController {
 
     @PostMapping("/admin/squadra")
     public String newSquadra(@Valid @ModelAttribute("squadra") Squadra squadra, BindingResult bindingResult) {
+        if (squadra.getNome() == null || squadra.getNome().trim().isEmpty()) {
+            bindingResult.rejectValue("nome", "required", "Il nome del club è obbligatorio");
+        }
+        if (squadra.getCitta() == null || squadra.getCitta().trim().isEmpty()) {
+            bindingResult.rejectValue("citta", "required", "La città è obbligatoria");
+        }
+        if (squadra.getAnnoFondazione() == null) {
+            bindingResult.rejectValue("annoFondazione", "required", "L'anno di fondazione è obbligatorio");
+        } else if (squadra.getAnnoFondazione() < 1800) {
+            bindingResult.rejectValue("annoFondazione", "min", "L'anno di fondazione deve essere valido");
+        }
         if (bindingResult.hasErrors()) {
             return "admin/formNewSquadra";
         }
@@ -77,6 +88,14 @@ public class AdminController {
     // Salva il torneo nel DB
     @PostMapping("/admin/torneo")
     public String newTorneo(@Valid @ModelAttribute("torneo") Torneo torneo, BindingResult bindingResult) {
+        if (torneo.getNome() == null || torneo.getNome().trim().isEmpty()) {
+            bindingResult.rejectValue("nome", "required", "Il nome del torneo è obbligatorio");
+        }
+        if (torneo.getAnno() == null) {
+            bindingResult.rejectValue("anno", "required", "L'anno del torneo è obbligatorio");
+        } else if (torneo.getAnno() < 1800) {
+            bindingResult.rejectValue("anno", "min", "L'anno deve essere valido");
+        }
         if (bindingResult.hasErrors()) {
             return "admin/formNewTorneo";
         }
@@ -122,6 +141,20 @@ public class AdminController {
     @PostMapping("/admin/squadra/{squadraId}/giocatore")
     public String newGiocatore(@PathVariable("squadraId") Long squadraId,
             @Valid @ModelAttribute("giocatore") Giocatore giocatore, BindingResult bindingResult, Model model) {
+        if (giocatore.getNome() == null || giocatore.getNome().trim().isEmpty()) {
+            bindingResult.rejectValue("nome", "required", "Il nome è obbligatorio");
+        }
+        if (giocatore.getCognome() == null || giocatore.getCognome().trim().isEmpty()) {
+            bindingResult.rejectValue("cognome", "required", "Il cognome è obbligatorio");
+        }
+        if (giocatore.getRuolo() == null || giocatore.getRuolo().trim().isEmpty()) {
+            bindingResult.rejectValue("ruolo", "required", "Il ruolo è obbligatorio");
+        }
+        if (giocatore.getDataNascita() == null) {
+            bindingResult.rejectValue("dataNascita", "required", "La data di nascita è obbligatoria");
+        } else if (giocatore.getDataNascita().isAfter(java.time.LocalDate.now())) {
+            bindingResult.rejectValue("dataNascita", "past", "La data di nascita deve essere nel passato");
+        }
         if (bindingResult.hasErrors()) {
             Squadra squadra = this.squadraService.findById(squadraId);
             model.addAttribute("squadra", squadra);
@@ -146,6 +179,26 @@ public class AdminController {
     // 2. Salva la partita nel DB
     @PostMapping("/admin/partita")
     public String newPartita(@Valid @ModelAttribute("partita") Partita partita, BindingResult bindingResult, Model model) {
+        if (partita.getTorneo() == null) {
+            bindingResult.rejectValue("torneo", "required", "Il torneo è obbligatorio");
+        }
+        if (partita.getSquadraCasa() == null) {
+            bindingResult.rejectValue("squadraCasa", "required", "La squadra di casa è obbligatoria");
+        }
+        if (partita.getSquadraTrasferta() == null) {
+            bindingResult.rejectValue("squadraTrasferta", "required", "La squadra in trasferta è obbligatoria");
+        } else if (partita.getSquadraCasa() != null && partita.getSquadraCasa().equals(partita.getSquadraTrasferta())) {
+            bindingResult.rejectValue("squadraTrasferta", "duplicate", "La squadra di casa e quella in trasferta non possono essere la stessa");
+        }
+        if (partita.getDataOra() == null) {
+            bindingResult.rejectValue("dataOra", "required", "La data e l'ora della partita sono obbligatorie");
+        }
+        if (partita.getLuogo() == null || partita.getLuogo().trim().isEmpty()) {
+            bindingResult.rejectValue("luogo", "required", "Il luogo della partita è obbligatorio");
+        }
+        if (partita.getArbitro() == null) {
+            bindingResult.rejectValue("arbitro", "required", "L'arbitro è obbligatorio");
+        }
         if (bindingResult.hasErrors()) {
             model.addAttribute("tornei", this.torneoService.findAll());
             model.addAttribute("squadre", this.squadraService.findAll());
@@ -170,7 +223,19 @@ public class AdminController {
     // 2. Salva il risultato nel DB e segna la partita come conclusa (PLAYED)
     @PostMapping("/admin/partita/{id}/risultato")
     public String updateRisultato(@PathVariable("id") Long id, @Valid @ModelAttribute("partita") Partita datiAggiornati, BindingResult bindingResult) {
+        if (datiAggiornati.getGoalsHome() == null) {
+            bindingResult.rejectValue("goalsHome", "required", "I gol della squadra in casa sono obbligatori");
+        }
+        if (datiAggiornati.getGoalsAway() == null) {
+            bindingResult.rejectValue("goalsAway", "required", "I gol della squadra in trasferta sono obbligatori");
+        }
         if (bindingResult.hasErrors()) {
+            Partita partitaOriginale = this.partitaService.findById(id);
+            if (partitaOriginale != null) {
+                datiAggiornati.setTorneo(partitaOriginale.getTorneo());
+                datiAggiornati.setSquadraCasa(partitaOriginale.getSquadraCasa());
+                datiAggiornati.setSquadraTrasferta(partitaOriginale.getSquadraTrasferta());
+            }
             return "admin/formUpdatePartita";
         }
         this.partitaService.updateRisultato(id, datiAggiornati);
@@ -236,6 +301,15 @@ public class AdminController {
     // 2. Salva l'arbitro compilato nel database
     @PostMapping("/admin/arbitro")
     public String saveArbitro(@Valid @ModelAttribute("arbitro") Arbitro arbitro, BindingResult bindingResult) {
+        if (arbitro.getNome() == null || arbitro.getNome().trim().isEmpty()) {
+            bindingResult.rejectValue("nome", "required", "Il nome è obbligatorio");
+        }
+        if (arbitro.getCognome() == null || arbitro.getCognome().trim().isEmpty()) {
+            bindingResult.rejectValue("cognome", "required", "Il cognome è obbligatorio");
+        }
+        if (arbitro.getCodiceArbitrale() == null || arbitro.getCodiceArbitrale().trim().isEmpty()) {
+            bindingResult.rejectValue("codiceArbitrale", "required", "Il codice arbitrale è obbligatorio");
+        }
         if (bindingResult.hasErrors()) {
             return "admin/formNewArbitro";
         }
@@ -256,7 +330,16 @@ public class AdminController {
 
     @PostMapping("/admin/torneo/{id}/edit")
     public String editTorneo(@PathVariable("id") Long id, @Valid @ModelAttribute("torneo") Torneo torneoModificato, BindingResult bindingResult) {
+        if (torneoModificato.getNome() == null || torneoModificato.getNome().trim().isEmpty()) {
+            bindingResult.rejectValue("nome", "required", "Il nome del torneo è obbligatorio");
+        }
+        if (torneoModificato.getAnno() == null) {
+            bindingResult.rejectValue("anno", "required", "L'anno del torneo è obbligatorio");
+        } else if (torneoModificato.getAnno() < 1800) {
+            bindingResult.rejectValue("anno", "min", "L'anno deve essere valido");
+        }
         if (bindingResult.hasErrors()) {
+            torneoModificato.setId(id);
             return "admin/formEditTorneo";
         }
         this.torneoService.updateTorneo(id, torneoModificato);
@@ -276,7 +359,19 @@ public class AdminController {
 
     @PostMapping("/admin/squadra/{id}/edit")
     public String editSquadra(@PathVariable("id") Long id, @Valid @ModelAttribute("squadra") Squadra squadraModificata, BindingResult bindingResult) {
+        if (squadraModificata.getNome() == null || squadraModificata.getNome().trim().isEmpty()) {
+            bindingResult.rejectValue("nome", "required", "Il nome del club è obbligatorio");
+        }
+        if (squadraModificata.getCitta() == null || squadraModificata.getCitta().trim().isEmpty()) {
+            bindingResult.rejectValue("citta", "required", "La città è obbligatoria");
+        }
+        if (squadraModificata.getAnnoFondazione() == null) {
+            bindingResult.rejectValue("annoFondazione", "required", "L'anno di fondazione è obbligatorio");
+        } else if (squadraModificata.getAnnoFondazione() < 1800) {
+            bindingResult.rejectValue("annoFondazione", "min", "L'anno di fondazione deve essere valido");
+        }
         if (bindingResult.hasErrors()) {
+            squadraModificata.setId(id);
             return "admin/formEditSquadra";
         }
         this.squadraService.updateSquadra(id, squadraModificata);
@@ -296,7 +391,29 @@ public class AdminController {
 
     @PostMapping("/admin/giocatore/{id}/edit")
     public String editGiocatore(@PathVariable("id") Long id, @Valid @ModelAttribute("giocatore") Giocatore giocatoreModificato, BindingResult bindingResult) {
+        if (giocatoreModificato.getNome() == null || giocatoreModificato.getNome().trim().isEmpty()) {
+            bindingResult.rejectValue("nome", "required", "Il nome è obbligatorio");
+        }
+        if (giocatoreModificato.getCognome() == null || giocatoreModificato.getCognome().trim().isEmpty()) {
+            bindingResult.rejectValue("cognome", "required", "Il cognome è obbligatorio");
+        }
+        if (giocatoreModificato.getRuolo() == null || giocatoreModificato.getRuolo().trim().isEmpty()) {
+            bindingResult.rejectValue("ruolo", "required", "Il ruolo è obbligatorio");
+        }
+        if (giocatoreModificato.getDataNascita() == null) {
+            bindingResult.rejectValue("dataNascita", "required", "La data di nascita è obbligatoria");
+        } else if (giocatoreModificato.getDataNascita().isAfter(java.time.LocalDate.now())) {
+            bindingResult.rejectValue("dataNascita", "past", "La data di nascita deve essere nel passato");
+        }
+        if (giocatoreModificato.getAltezza() != null && giocatoreModificato.getAltezza() < 0) {
+            bindingResult.rejectValue("altezza", "min", "L'altezza non può essere negativa");
+        }
         if (bindingResult.hasErrors()) {
+            Giocatore giocatoreOriginale = this.giocatoreService.findById(id);
+            if (giocatoreOriginale != null) {
+                giocatoreModificato.setSquadra(giocatoreOriginale.getSquadra());
+                giocatoreModificato.setId(id);
+            }
             return "admin/formEditGiocatore";
         }
         this.giocatoreService.updateGiocatore(id, giocatoreModificato);
