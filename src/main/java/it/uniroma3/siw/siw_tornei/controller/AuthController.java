@@ -1,56 +1,54 @@
 package it.uniroma3.siw.siw_tornei.controller;
 
-import it.uniroma3.siw.siw_tornei.model.User;
-import it.uniroma3.siw.siw_tornei.repository.UserRepository;
+import it.uniroma3.siw.siw_tornei.service.CredentialsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class AuthController {
 
     @Autowired
-    private UserRepository userRepository;
+    private CredentialsService credentialsService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    // 1. Mostra la pagina di registrazione
-    @GetMapping("/register")
-    public String showRegistrationForm(Model model) {
-        model.addAttribute("user", new User());
-        return "register";
-    }
-
-    // 2. Gestisce il salvataggio dei dati inviati dal form
+    // --- Pagina di Login ---
     @GetMapping("/login")
     public String showLoginForm() {
         return "login";
     }
 
+    // --- Pagina di Registrazione ---
+    @GetMapping("/register")
+    public String showRegistrationForm() {
+        return "register";
+    }
+
+    // --- Gestione della Registrazione ---
     @PostMapping("/register")
-    public String registerUser(@ModelAttribute("user") User user, Model model) {
-        // Controlliamo se lo username è già occupato
-        if (userRepository.findByUsername(user.getUsername()).isPresent()) {
-            model.addAttribute("error", "Questo username è già registrato!");
+    public String registerUser(
+            @RequestParam("nome") String nome,
+            @RequestParam("cognome") String cognome,
+            @RequestParam("email") String email,
+            @RequestParam("password") String password,
+            Model model) {
+
+        // Delega validazione e salvataggio al service
+        String errore = credentialsService.register(nome, cognome, email, password);
+
+        if (errore != null) {
+            // Validazione fallita: torna al form con il messaggio di errore
+            // e i dati inseriti (tranne la password per sicurezza)
+            model.addAttribute("error", errore);
+            model.addAttribute("nome", nome);
+            model.addAttribute("cognome", cognome);
+            model.addAttribute("email", email);
             return "register";
         }
 
-        // Criptiamo la password inserita a mano prima di salvarla
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        
-        // Impostiamo i valori fissi per la registrazione standard
-        user.setRuolo("USER");
-        user.setProvider("LOCAL");
-
-        // Salviamo l'utente nel DB
-        userRepository.save(user);
-
-        // Reindirizziamo al login con un parametro di successo opzionale
-        return "redirect:/login";
+        // Registrazione completata con successo: redirect al login
+        return "redirect:/login?registered";
     }
 }

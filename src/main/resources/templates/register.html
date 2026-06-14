@@ -27,31 +27,37 @@
                     <p class="text-muted small">Registrati per poter commentare le partite dei tornei</p>
                 </div>
 
-                <div class="d-grid gap-2 mb-3">
-                    <a href="/oauth2/authorization/google" class="btn btn-outline-dark fw-bold py-2 shadow-sm d-flex align-items-center justify-content-center gap-2">
-                        <i class="bi bi-google text-danger fs-5"></i> Registrati con Google
-                    </a>
-                </div>
-
-                <div class="text-center text-muted position-relative my-4">
-                    <hr>
-                    <span class="bg-white px-3 position-absolute top-50 start-50 translate-middle small">oppure</span>
-                </div>
 
                 <div th:if="${error}" class="alert alert-danger shadow-sm small" th:text="${error}">
                     Errore durante la registrazione.
                 </div>
 
-                <form th:action="@{/register}" method="POST" th:object="${user}">
-                    
+                <form th:action="@{/register}" method="POST">
+
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label fw-semibold small">Nome</label>
+                            <input type="text" class="form-control" name="nome"
+                                   th:value="${nome}" placeholder="Es: Mario" required />
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label fw-semibold small">Cognome</label>
+                            <input type="text" class="form-control" name="cognome"
+                                   th:value="${cognome}" placeholder="Es: Rossi" required />
+                        </div>
+                    </div>
+
                     <div class="mb-3">
-                        <label class="form-label fw-semibold small">Scegli uno Username / Email</label>
-                        <input type="text" class="form-control" th:field="*{username}" placeholder="Es: mario.rossi" required />
+                        <label class="form-label fw-semibold small">Email</label>
+                        <input type="email" class="form-control" name="email"
+                               th:value="${email}" placeholder="Es: mario.rossi@email.com" required />
                     </div>
                     
                     <div class="mb-4">
-                        <label class="form-label fw-semibold small">Scegli una Password</label>
-                        <input type="password" class="form-control" th:field="*{password}" placeholder="Minimo 4 caratteri" required />
+                        <label class="form-label fw-semibold small">Password</label>
+                        <input type="password" class="form-control" name="password"
+                               placeholder="Min. 8 caratteri, 1 maiuscola, 1 numero" required minlength="8" />
+                        <div class="form-text">Almeno 8 caratteri, una lettera maiuscola e un numero.</div>
                     </div>
                     
                     <button type="submit" class="btn btn-success w-100 py-2 fw-bold shadow-sm">Completa Registrazione</button>
