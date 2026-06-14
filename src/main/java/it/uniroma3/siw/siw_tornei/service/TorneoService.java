@@ -59,8 +59,34 @@ public class TorneoService {
         
         if (torneo != null && squadra != null) {
             // Aggiungiamo il torneo alla lista dei tornei della squadra
-            squadra.getTornei().add(torneo);
+            if (!squadra.getTornei().contains(torneo)) {
+                squadra.getTornei().add(torneo);
+                this.squadraRepository.save(squadra);
+            }
+        }
+    }
+
+    @Transactional
+    public void removeSquadraFromTorneo(Long torneoId, Long squadraId) {
+        Torneo torneo = this.torneoRepository.findById(torneoId).orElse(null);
+        Squadra squadra = this.squadraRepository.findById(squadraId).orElse(null);
+
+        if (torneo != null && squadra != null) {
+            squadra.getTornei().remove(torneo);
             this.squadraRepository.save(squadra);
+        }
+    }
+
+    @Transactional
+    public void deleteTorneo(Long id) {
+        Torneo torneo = this.torneoRepository.findById(id).orElse(null);
+        if (torneo != null) {
+            // Remove the associations on the owning side (Squadra)
+            for (Squadra s : torneo.getSquadre()) {
+                s.getTornei().remove(torneo);
+                this.squadraRepository.save(s);
+            }
+            this.torneoRepository.delete(torneo);
         }
     }
 }

@@ -27,4 +27,19 @@ public class GiocatoreService {
             this.giocatoreRepository.save(giocatore);
         }
     }
+
+    @Transactional(readOnly = true)
+    public Giocatore findById(Long id) {
+        return this.giocatoreRepository.findById(id).orElse(null);
+    }
+
+    @Transactional
+    public void saveGiocatore(Giocatore giocatore) {
+        this.giocatoreRepository.save(giocatore);
+    }
+
+    @Transactional
+    public void deleteGiocatore(Long id) {
+        this.giocatoreRepository.deleteById(id);
+    }
 }

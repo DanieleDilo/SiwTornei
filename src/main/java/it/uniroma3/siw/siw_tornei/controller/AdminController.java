@@ -5,16 +5,12 @@ import it.uniroma3.siw.siw_tornei.model.Giocatore;
 import it.uniroma3.siw.siw_tornei.model.Partita;
 import it.uniroma3.siw.siw_tornei.model.Squadra;
 import it.uniroma3.siw.siw_tornei.model.Torneo;
-import it.uniroma3.siw.siw_tornei.repository.ArbitroRepository;
-import it.uniroma3.siw.siw_tornei.repository.GiocatoreRepository;
-import it.uniroma3.siw.siw_tornei.repository.PartitaRepository;
-import it.uniroma3.siw.siw_tornei.repository.SquadraRepository;
-import it.uniroma3.siw.siw_tornei.repository.TorneoRepository;
 import it.uniroma3.siw.siw_tornei.service.ArbitroService;
 import it.uniroma3.siw.siw_tornei.service.GiocatoreService;
 import it.uniroma3.siw.siw_tornei.service.PartitaService;
 import it.uniroma3.siw.siw_tornei.service.SquadraService;
 import it.uniroma3.siw.siw_tornei.service.TorneoService;
+import it.uniroma3.siw.siw_tornei.service.PerformanceAnalysisService;
 
 import java.util.List;
 
@@ -34,31 +30,19 @@ public class AdminController {
     private TorneoService torneoService;
 
     @Autowired
-    private TorneoRepository torneoRepository;
-
-    @Autowired
     private SquadraService squadraService;
-
-    @Autowired
-    private SquadraRepository squadraRepository;
 
     @Autowired
     private GiocatoreService giocatoreService;
 
     @Autowired
-    private GiocatoreRepository giocatoreRepository;
-
-    @Autowired
     private PartitaService partitaService;
-
-    @Autowired
-    private PartitaRepository partitaRepository;
 
     @Autowired
     private ArbitroService arbitroService;
 
     @Autowired
-    private ArbitroRepository arbitroRepository;
+    private PerformanceAnalysisService performanceAnalysisService;
 
     @GetMapping("/admin/formNewSquadra")
     public String formNewSquadra(Model model) {
@@ -117,7 +101,7 @@ public class AdminController {
         return "redirect:/admin/torneo/" + torneoId + "/squadre";
     }
 
-    // 1. Mostra la form (nota che ho cambiato {id} in {squadraId})
+    // 1. Mostra la form
     @GetMapping("/admin/squadra/{squadraId}/formNewGiocatore")
     public String formNewGiocatore(@PathVariable("squadraId") Long squadraId, Model model) {
         Squadra squadra = this.squadraService.findById(squadraId);
@@ -126,7 +110,7 @@ public class AdminController {
         return "admin/formNewGiocatore";
     }
 
-    // 2. Salva il giocatore (anche qui {id} diventa {squadraId})
+    // 2. Salva il giocatore
     @PostMapping("/admin/squadra/{squadraId}/giocatore")
     public String newGiocatore(@PathVariable("squadraId") Long squadraId,
             @ModelAttribute("giocatore") Giocatore giocatore) {
@@ -183,90 +167,55 @@ public class AdminController {
     // --- ELIMINA TORNEO ---
     @PostMapping("/admin/torneo/{id}/delete")
     public String deleteTorneo(@PathVariable("id") Long id) {
-        torneoRepository.deleteById(id);
+        this.torneoService.deleteTorneo(id);
         return "redirect:/torneo"; // Torna alla lista pubblica dei tornei
     }
 
     // --- ELIMINA SQUADRA ---
     @PostMapping("/admin/squadra/{id}/delete")
     public String deleteSquadra(@PathVariable("id") Long id) {
-        squadraRepository.deleteById(id);
-        return "redirect:/squadra"; // Torna alla lista pubblica (React o Thymeleaf)
+        this.squadraService.deleteSquadra(id);
+        return "redirect:/squadra"; // Torna alla lista pubblica
     }
 
     // --- ELIMINA GIOCATORE ---
     @PostMapping("/admin/giocatore/{id}/delete")
     public String deleteGiocatore(@PathVariable("id") Long id) {
-        // Prima di eliminare, recuperiamo la squadra per sapere dove reindirizzare
-        // l'admin
-        Giocatore giocatore = giocatoreRepository.findById(id).orElse(null);
+        Giocatore giocatore = this.giocatoreService.findById(id);
         if (giocatore != null && giocatore.getSquadra() != null) {
             Long idSquadra = giocatore.getSquadra().getId();
-            giocatoreRepository.deleteById(id);
+            this.giocatoreService.deleteGiocatore(id);
             return "redirect:/squadra/" + idSquadra; // Torna alla pagina della squadra
         }
-        giocatoreRepository.deleteById(id);
+        this.giocatoreService.deleteGiocatore(id);
         return "redirect:/squadra";
     }
 
     // --- ELIMINA PARTITA ---
     @PostMapping("/admin/partita/{id}/delete")
     public String deletePartita(@PathVariable("id") Long id) {
-        partitaRepository.deleteById(id);
+        this.partitaService.deletePartita(id);
         return "redirect:/partite"; // Torna al calendario
     }
 
     // --- AGGIUNGI SQUADRA AL TORNEO ---
-    // Il form invia il torneoId nel percorso e il squadraId come parametro della
-    // form (name="squadraId")
     @PostMapping("/admin/torneo/{id}/addSquadra")
     public String addSquadraToTorneo(@PathVariable("id") Long torneoId, @RequestParam("squadraId") Long squadraId) {
-        Torneo torneo = torneoRepository.findById(torneoId).orElse(null);
-        Squadra squadra = squadraRepository.findById(squadraId).orElse(null);
-
-        if (torneo != null && squadra != null) {
-            // Aggiungiamo la squadra alla lista del torneo
-            torneo.getSquadre().add(squadra);
-
-            // SE la relazione è bidirezionale (es. anche Squadra ha una lista di tornei),
-            // è buona norma aggiornare entrambi i lati:
-            if (squadra.getTornei() != null) {
-                squadra.getTornei().add(torneo);
-            }
-
-            // Salva le modifiche nel database
-            torneoRepository.save(torneo);
-        }
-
-        // Rinfresca la stessa pagina di gestione iscrizioni
+        this.torneoService.addSquadraToTorneo(torneoId, squadraId);
         return "redirect:/admin/torneo/" + torneoId + "/squadre";
     }
 
     // --- RIMUOVI SQUADRA DAL TORNEO ---
-    // Il form di rimozione invia entrambi gli ID nel percorso dell'URL
     @PostMapping("/admin/torneo/{torneoId}/removeSquadra/{squadraId}")
     public String removeSquadraFromTorneo(@PathVariable("torneoId") Long torneoId,
             @PathVariable("squadraId") Long squadraId) {
-        Torneo torneo = torneoRepository.findById(torneoId).orElse(null);
-        Squadra squadra = squadraRepository.findById(squadraId).orElse(null);
-
-        if (torneo != null && squadra != null) {
-            torneo.getSquadre().remove(squadra);
-
-            if (squadra.getTornei() != null) {
-                squadra.getTornei().remove(torneo);
-            }
-
-            torneoRepository.save(torneo);
-        }
-
+        this.torneoService.removeSquadraFromTorneo(torneoId, squadraId);
         return "redirect:/admin/torneo/" + torneoId + "/squadre";
     }
 
     // 1. Mostra il form per inserire un nuovo arbitro
     @GetMapping("/admin/formNewArbitro")
     public String formNewArbitro(Model model) {
-        // Passiamo un oggetto Arbitro vuoto per il th:object
         model.addAttribute("arbitro", new Arbitro());
         return "admin/formNewArbitro";
     }
@@ -274,11 +223,109 @@ public class AdminController {
     // 2. Salva l'arbitro compilato nel database
     @PostMapping("/admin/arbitro")
     public String saveArbitro(@ModelAttribute("arbitro") Arbitro arbitro) {
-        // Salva l'arbitro usando il tuo repository
-        arbitroRepository.save(arbitro);
-
-        // Scegli dove reindirizzare l'admin (es: alla home o a una lista arbitri)
+        this.arbitroService.saveArbitro(arbitro);
         return "redirect:/admin/index";
     }
+
+    // --- MODIFICA TORNEO ---
+    @GetMapping("/admin/torneo/{id}/edit")
+    public String formEditTorneo(@PathVariable("id") Long id, Model model) {
+        Torneo torneo = this.torneoService.findById(id);
+        if (torneo == null) {
+            return "redirect:/torneo";
+        }
+        model.addAttribute("torneo", torneo);
+        return "admin/formEditTorneo";
+    }
+
+    @PostMapping("/admin/torneo/{id}/edit")
+    public String editTorneo(@PathVariable("id") Long id, @ModelAttribute("torneo") Torneo torneoModificato) {
+        Torneo torneo = this.torneoService.findById(id);
+        if (torneo != null) {
+            torneo.setNome(torneoModificato.getNome());
+            torneo.setAnno(torneoModificato.getAnno());
+            torneo.setDescrizione(torneoModificato.getDescrizione());
+            this.torneoService.saveTorneo(torneo);
+            return "redirect:/torneo/" + torneo.getId();
+        }
+        return "redirect:/torneo";
+    }
+
+    // --- MODIFICA SQUADRA ---
+    @GetMapping("/admin/squadra/{id}/edit")
+    public String formEditSquadra(@PathVariable("id") Long id, Model model) {
+        Squadra squadra = this.squadraService.findById(id);
+        if (squadra == null) {
+            return "redirect:/squadra";
+        }
+        model.addAttribute("squadra", squadra);
+        return "admin/formEditSquadra";
+    }
+
+    @PostMapping("/admin/squadra/{id}/edit")
+    public String editSquadra(@PathVariable("id") Long id, @ModelAttribute("squadra") Squadra squadraModificata) {
+        Squadra squadra = this.squadraService.findById(id);
+        if (squadra != null) {
+            squadra.setNome(squadraModificata.getNome());
+            squadra.setAnnoFondazione(squadraModificata.getAnnoFondazione());
+            squadra.setCitta(squadraModificata.getCitta());
+            this.squadraService.saveSquadra(squadra);
+            return "redirect:/squadra/" + squadra.getId();
+        }
+        return "redirect:/squadra";
+    }
+
+    // --- MODIFICA GIOCATORE ---
+    @GetMapping("/admin/giocatore/{id}/edit")
+    public String formEditGiocatore(@PathVariable("id") Long id, Model model) {
+        Giocatore giocatore = this.giocatoreService.findById(id);
+        if (giocatore == null) {
+            return "redirect:/squadra";
+        }
+        model.addAttribute("giocatore", giocatore);
+        return "admin/formEditGiocatore";
+    }
+
+    @PostMapping("/admin/giocatore/{id}/edit")
+    public String editGiocatore(@PathVariable("id") Long id, @ModelAttribute("giocatore") Giocatore giocatoreModificato) {
+        Giocatore giocatore = this.giocatoreService.findById(id);
+        if (giocatore != null) {
+            giocatore.setNome(giocatoreModificato.getNome());
+            giocatore.setCognome(giocatoreModificato.getCognome());
+            giocatore.setDataNascita(giocatoreModificato.getDataNascita());
+            giocatore.setRuolo(giocatoreModificato.getRuolo());
+            giocatore.setAltezza(giocatoreModificato.getAltezza());
+            this.giocatoreService.saveGiocatore(giocatore);
+            if (giocatore.getSquadra() != null) {
+                return "redirect:/squadra/" + giocatore.getSquadra().getId();
+            }
+        }
+        return "redirect:/squadra";
+    }
+
+    // --- ANALISI PERFORMANCE (Punto 8) ---
+    @GetMapping("/admin/performance-analysis")
+    public String performanceAnalysis(
+            @RequestParam(value = "runBenchmarkId", required = false) Long runBenchmarkId,
+            @RequestParam(value = "generated", required = false) Boolean generated,
+            Model model) {
+        
+        List<Torneo> tornei = this.torneoService.findAll();
+        model.addAttribute("tornei", tornei);
+        model.addAttribute("generated", generated);
+
+        if (runBenchmarkId != null) {
+            java.util.Map<String, Object> benchmarkResult = this.performanceAnalysisService.eseguiBenchmark(runBenchmarkId);
+            model.addAttribute("result", benchmarkResult);
+            model.addAttribute("activeTorneoId", runBenchmarkId);
+        }
+
+        return "admin/performanceAnalysis";
+    }
+
+    @PostMapping("/admin/performance-analysis/generate-mock")
+    public String generateMockData() {
+        Long generatedId = this.performanceAnalysisService.generaDatiDiTest();
+        return "redirect:/admin/performance-analysis?runBenchmarkId=" + generatedId + "&generated=true";
+    }
 }
-    

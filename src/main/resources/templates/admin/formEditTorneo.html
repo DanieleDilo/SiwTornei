@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Modifica Torneo - SIW Tornei</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="bg-light">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm mb-4">
+        <div class="container">
+            <a class="navbar-brand fw-bold" th:href="@{/}"><i class="bi bi-trophy-fill text-warning"></i> SIW Tornei</a>
+        </div>
+    </nav>
+
+    <div class="container login-container" style="max-width: 600px; margin: 0 auto;">
+        <a th:href="@{/torneo/{id}(id=${torneo.id})}" class="btn btn-link text-decoration-none mb-3 p-0"><i class="bi bi-arrow-left"></i> Annulla e Torna</a>
+        
+        <div class="card shadow border-0">
+            <div class="card-body p-4">
+                <h3 class="fw-bold text-primary mb-4"><i class="bi bi-pencil-square"></i> Modifica Torneo</h3>
+                
+                <form th:action="@{/admin/torneo/{id}/edit(id=${torneo.id})}" method="POST" th:object="${torneo}">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Nome del Torneo</label>
+                        <input type="text" class="form-control" th:field="*{nome}" placeholder="Es: Torneo Estivo SIW" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Anno Edizione</label>
+                        <input type="number" class="form-control" th:field="*{anno}" placeholder="Es: 2026" required />
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Descrizione</label>
+                        <textarea class="form-control" th:field="*{descrizione}" rows="4" placeholder="Inserisci una descrizione per questo torneo..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">Salva Modifiche</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

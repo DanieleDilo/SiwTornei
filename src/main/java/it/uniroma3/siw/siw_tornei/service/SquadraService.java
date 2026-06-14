@@ -1,6 +1,8 @@
 package it.uniroma3.siw.siw_tornei.service;
 
+import it.uniroma3.siw.siw_tornei.model.Giocatore;
 import it.uniroma3.siw.siw_tornei.model.Squadra;
+import it.uniroma3.siw.siw_tornei.repository.GiocatoreRepository;
 import it.uniroma3.siw.siw_tornei.repository.SquadraRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +16,9 @@ public class SquadraService {
 
     @Autowired
     private SquadraRepository squadraRepository;
+
+    @Autowired
+    private GiocatoreRepository giocatoreRepository;
 
     @Transactional
     public void saveSquadra(Squadra squadra) {
@@ -32,5 +37,20 @@ public class SquadraService {
     @Transactional(readOnly = true)
     public Squadra findById(Long id) {
         return this.squadraRepository.findById(id).orElse(null);
+    }
+
+    @Transactional
+    public void deleteSquadra(Long id) {
+        Squadra squadra = this.squadraRepository.findById(id).orElse(null);
+        if (squadra != null) {
+            // Disassociate players from the team
+            if (squadra.getGiocatori() != null) {
+                for (Giocatore g : squadra.getGiocatori()) {
+                    g.setSquadra(null);
+                    this.giocatoreRepository.save(g);
+                }
+            }
+            this.squadraRepository.delete(squadra);
+        }
     }
 }

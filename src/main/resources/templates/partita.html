@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="'Partita - SIW Tornei'">Partita - SIW Tornei</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="bg-light">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold" th:href="@{/}"><i class="bi bi-trophy-fill text-warning"></i> SIW Tornei</a>
+            <div class="d-flex align-items-center gap-2 ms-auto">
+                <span sec:authorize="isAuthenticated()" class="text-white small">
+                    Benvenuto, <strong th:text="${nomeUtente}">utente</strong>
+                </span>
+                <a sec:authorize="hasAuthority('ADMIN')" class="btn btn-outline-light btn-sm" th:href="@{/admin/index}">
+                    <i class="bi bi-person-lock"></i> Area Admin
+                </a>
+                <a sec:authorize="isAuthenticated()" class="btn btn-light btn-sm" th:href="@{/logout}">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </a>
+                <a sec:authorize="isAnonymous()" class="btn btn-outline-light btn-sm" th:href="@{/login}">
+                    <i class="bi bi-box-arrow-in-right"></i> Accedi
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <a th:href="@{/partite}" class="btn btn-link text-decoration-none mb-3 p-0">
+            <i class="bi bi-arrow-left"></i> Torna al Calendario
+        </a>
+
+        <!-- Dettaglio Partita -->
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body p-4">
+                <div class="text-center mb-3">
+                    <span class="badge bg-secondary" th:text="${partita.torneo?.nome}">Torneo</span>
+                    <span class="badge" th:classappend="${partita.stato.name() == 'PLAYED' ? 'bg-success' : (partita.stato.name() == 'CANCELED' ? 'bg-danger' : 'bg-warning text-dark')}"
+                          th:text="${partita.stato}">STATO</span>
+                </div>
+
+                <div class="row text-center align-items-center">
+                    <div class="col-4">
+                        <h4 class="fw-bold" th:text="${partita.squadraCasa?.nome}">Squadra Casa</h4>
+                        <a th:href="@{/squadra/{id}(id=${partita.squadraCasa?.id})}" class="small text-decoration-none">Vedi squadra</a>
+                    </div>
+                    <div class="col-4">
+                        <div th:if="${partita.stato.name() == 'PLAYED'}">
+                            <span class="display-4 fw-bold text-primary" th:text="${partita.goalsHome} + ' - ' + ${partita.goalsAway}">0 - 0</span>
+                        </div>
+                        <div th:if="${partita.stato.name() != 'PLAYED'}">
+                            <span class="display-6 text-muted">vs</span>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <h4 class="fw-bold" th:text="${partita.squadraTrasferta?.nome}">Squadra Trasferta</h4>
+                        <a th:href="@{/squadra/{id}(id=${partita.squadraTrasferta?.id})}" class="small text-decoration-none">Vedi squadra</a>
+                    </div>
+                </div>
+
+                <hr>
+                <div class="row text-center text-muted small">
+                    <div class="col-4">
+                        <i class="bi bi-calendar-event"></i>
+                        <span th:text="${partita.dataOra != null ? #temporals.format(partita.dataOra, 'dd/MM/yyyy HH:mm') : 'Data non definita'}">Data</span>
+                    </div>
+                    <div class="col-4">
+                        <i class="bi bi-geo-alt"></i>
+                        <span th:text="${partita.luogo ?: 'Luogo non definito'}">Luogo</span>
+                    </div>
+                    <div class="col-4">
+                        <i class="bi bi-person-badge"></i>
+                        <span th:text="${partita.arbitro != null ? partita.arbitro.nome + ' ' + partita.arbitro.cognome : 'Non assegnato'}">Arbitro</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sezione Commenti -->
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+                <h5 class="fw-bold mb-3"><i class="bi bi-chat-dots"></i> Commenti</h5>
+
+                <!-- Form per aggiungere un commento (solo utenti autenticati) -->
+                <div sec:authorize="isAuthenticated()" class="mb-4">
+                    <form th:action="@{/commento/{id}(id=${partita.id})}" method="POST">
+                        <div class="input-group">
+                            <input type="text" name="testo" class="form-control" placeholder="Scrivi un commento..." required maxlength="1000" />
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-send"></i> Invia
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div sec:authorize="isAnonymous()" class="alert alert-info small mb-4">
+                    <i class="bi bi-info-circle"></i> <a th:href="@{/login}" class="fw-bold">Accedi</a> per poter commentare.
+                </div>
+
+                <!-- Lista commenti -->
+                <div th:if="${#lists.isEmpty(commenti)}" class="text-muted text-center py-3">
+                    <i class="bi bi-chat display-6"></i>
+                    <p class="mt-2">Nessun commento ancora. Sii il primo!</p>
+                </div>
+
+                <div th:each="commento : ${commenti}" class="border-bottom pb-3 mb-3">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <strong class="text-primary"
+                                    th:text="${commento.autore?.user != null ? commento.autore.user.nome + ' ' + commento.autore.user.cognome : commento.autore?.username}">
+                                Utente
+                            </strong>
+                            <span class="text-muted small ms-2"
+                                  th:text="${#temporals.format(commento.dataCreazione, 'dd/MM/yyyy HH:mm')}">data</span>
+                            <span th:if="${commento.dataModifica != null}" class="text-muted small fst-italic"> (modificato)</span>
+                        </div>
+
+                        <!-- Pulsanti modifica/elimina solo per l'autore del commento -->
+                        <div th:if="${usernameCorrente != null and commento.autore?.username == usernameCorrente}">
+                            <a th:href="@{/commento/{id}/edit(id=${commento.id})}" class="btn btn-outline-secondary btn-sm me-1" title="Modifica">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <form th:action="@{/commento/{id}/delete(id=${commento.id})}" method="POST" class="d-inline">
+                                <button type="submit" class="btn btn-outline-danger btn-sm" title="Elimina"
+                                        onclick="return confirm('Sei sicuro di voler eliminare questo commento?')">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    <p class="mb-0 mt-1" th:text="${commento.testo}">Testo del commento</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -31,8 +31,11 @@
                         <hr>
                         
                         <div class="d-grid gap-2 mt-3" sec:authorize="hasAuthority('ADMIN')">
+                            <a th:href="@{'/admin/torneo/' + ${torneo.id} + '/edit'}" class="btn btn-outline-primary">
+                                 <i class="bi bi-pencil-square"></i> Modifica Dettagli
+                            </a>
                             <a th:href="@{'/admin/torneo/' + ${torneo.id} + '/squadre'}" class="btn btn-warning">
-                                 <i class="bi bi-pencil-square"></i> Gestisci Iscrizioni
+                                 <i class="bi bi-plus-circle-fill"></i> Gestisci Iscrizioni
                             </a>
                             <form th:action="@{'/admin/torneo/' + ${torneo.id} + '/delete'}" method="POST" 
                                   onsubmit="return confirm('Sei sicuro di voler eliminare definitivamente questo torneo?');">

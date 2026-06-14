@@ -4,6 +4,7 @@ import it.uniroma3.siw.siw_tornei.model.*;
 import it.uniroma3.siw.siw_tornei.repository.PartitaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -13,6 +14,7 @@ public class ClassificaService {
     @Autowired
     private PartitaRepository partitaRepository;
 
+    @Transactional(readOnly = true)
     public List<RigaClassifica> generaClassifica(Torneo torneo) {
         // Usiamo una mappa per trovare subito la squadra tramite il suo ID
         Map<Long, RigaClassifica> mappaClassifica = new HashMap<>();
@@ -25,9 +27,9 @@ public class ClassificaService {
         }
 
         // 2. Leggi le partite e assegna i punti
-        for (Partita p : partitaRepository.findAll()) {
-            // Se la partita appartiene a questo torneo ed è già stata GIOCATA...
-            if (p.getTorneo().getId().equals(torneo.getId()) && "PLAYED".equals(p.getStato().name())) {
+        for (Partita p : partitaRepository.findByTorneo(torneo)) {
+            // Se la partita è già stata GIOCATA...
+            if (p.getStato() != null && "PLAYED".equals(p.getStato().name())) {
                 
                 RigaClassifica rigaCasa = mappaClassifica.get(p.getSquadraCasa().getId());
                 RigaClassifica rigaTrasf = mappaClassifica.get(p.getSquadraTrasferta().getId());

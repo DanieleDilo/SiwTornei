@@ -16,4 +16,9 @@ public class ArbitroService {
     public List<Arbitro> findAll() {
         return (List<Arbitro>) this.arbitroRepository.findAll();
     }
+
+    @Transactional
+    public void saveArbitro(Arbitro arbitro) {
+        this.arbitroRepository.save(arbitro);
+    }
 }

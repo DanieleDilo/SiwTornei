@@ -42,6 +42,9 @@
                 </div>
                 
                 <div sec:authorize="hasAuthority('ADMIN')" class="d-grid gap-2">
+                    <a th:href="@{'/admin/squadra/' + ${squadra.id} + '/edit'}" class="btn btn-warning shadow-sm">
+                        <i class="bi bi-pencil-square"></i> Modifica Squadra
+                    </a>
                     <a th:href="@{'/admin/squadra/' + ${squadra.id} + '/formNewGiocatore'}" class="btn btn-dark shadow-sm">
                         <i class="bi bi-person-plus"></i> Aggiungi Giocatore
                     </a>
@@ -75,12 +78,17 @@
                                     <td><span class="badge bg-secondary" th:text="${giocatore.ruolo}">Ruolo</span></td>
                                     <td th:text="${giocatore.dataNascita}">Data</td>
                                     <td class="text-end" sec:authorize="hasAuthority('ADMIN')">
-                                        <form th:action="@{'/admin/giocatore/' + ${giocatore.id} + '/delete'}" method="POST" 
-                                              onsubmit="return confirm('Eliminare questo giocatore?');" class="m-0">
-                                            <button type="submit" class="btn btn-sm btn-danger">
-                                                <i class="bi bi-person-x-fill"></i>
-                                            </button>
-                                        </form>
+                                        <div class="d-flex justify-content-end gap-1">
+                                            <a th:href="@{'/admin/giocatore/' + ${giocatore.id} + '/edit'}" class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </a>
+                                            <form th:action="@{'/admin/giocatore/' + ${giocatore.id} + '/delete'}" method="POST" 
+                                                  onsubmit="return confirm('Eliminare questo giocatore?');" class="m-0">
+                                                <button type="submit" class="btn btn-sm btn-danger">
+                                                    <i class="bi bi-person-x-fill"></i>
+                                                </button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             </tbody>
