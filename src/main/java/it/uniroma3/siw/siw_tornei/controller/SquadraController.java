@@ -1,7 +1,6 @@
 package it.uniroma3.siw.siw_tornei.controller;
 
 import it.uniroma3.siw.siw_tornei.model.Squadra;
-import it.uniroma3.siw.siw_tornei.repository.SquadraRepository;
 import it.uniroma3.siw.siw_tornei.service.SquadraService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
