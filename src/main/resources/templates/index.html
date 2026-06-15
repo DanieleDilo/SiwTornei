@@ -17,6 +17,9 @@
                 <span sec:authorize="isAuthenticated()" class="text-white small">
                     Benvenuto, <strong th:text="${nomeUtente}">utente</strong>
                 </span>
+                <a sec:authorize="isAuthenticated()" class="btn btn-outline-light btn-sm" th:href="@{/utente/profilo}">
+                    <i class="bi bi-person-circle"></i> Profilo
+                </a>
                 <a sec:authorize="hasAuthority('ADMIN')" class="btn btn-outline-light btn-sm" th:href="@{/admin/index}">
                     <i class="bi bi-person-lock"></i> Area Admin
                 </a>

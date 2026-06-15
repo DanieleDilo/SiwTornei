@@ -78,6 +78,21 @@ public class CredentialsService {
     }
 
     /**
+     * Aggiorna nome e cognome dell'utente.
+     */
+    @Transactional
+    public void updateProfile(Credentials credentials, String nome, String cognome) {
+        User user = credentials.getUser();
+        if (user == null) {
+            user = new User();
+            credentials.setUser(user);
+        }
+        user.setNome(nome.trim());
+        user.setCognome(cognome.trim());
+        credentialsRepository.save(credentials);
+    }
+
+    /**
      * Trova le credenziali per username (email).
      */
     @Transactional(readOnly = true)

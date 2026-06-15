@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Profilo Utente - SIW Tornei</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="bg-light">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm mb-4">
+        <div class="container">
+            <a class="navbar-brand fw-bold" th:href="@{/}"><i class="bi bi-trophy-fill text-warning"></i> SIW Tornei</a>
+            <div class="d-flex align-items-center gap-2 ms-auto">
+                <span sec:authorize="isAuthenticated()" class="text-white small me-2">
+                    Benvenuto, <strong th:text="${nomeUtente}">utente</strong>
+                </span>
+                <a sec:authorize="hasAuthority('ADMIN')" class="btn btn-outline-light btn-sm" th:href="@{/admin/index}">
+                    <i class="bi bi-person-lock"></i> Area Admin
+                </a>
+                <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" class="m-0">
+                    <button type="submit" class="btn btn-light btn-sm">
+                        <i class="bi bi-box-arrow-right"></i> Logout
+                    </button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container login-container" style="max-width: 500px;">
+        <a th:href="@{/}" class="btn btn-link text-decoration-none mb-3 p-0"><i class="bi bi-arrow-left"></i> Torna alla Home</a>
+        
+        <div class="card shadow border-0">
+            <div class="card-body p-4">
+                <div class="text-center mb-4">
+                    <div class="position-relative d-inline-block">
+                        <i class="bi bi-person-circle display-4 text-primary"></i>
+                        <span th:if="${credentials.provider == 'GOOGLE'}" class="position-absolute bottom-0 end-0 badge bg-danger border border-white rounded-circle p-1" title="Google Account">
+                            <i class="bi bi-google fs-7 text-white"></i>
+                        </span>
+                    </div>
+                    <h3 class="fw-bold text-dark mt-2">Profilo Utente</h3>
+                    <p class="text-muted small">Gestisci i dettagli del tuo account</p>
+                </div>
+                
+                <!-- Feedback alerts -->
+                <div th:if="${success}" class="alert alert-success shadow-sm small mb-3">
+                    <i class="bi bi-check-circle-fill me-1"></i> <span th:text="${success}">Profilo aggiornato!</span>
+                </div>
+                <div th:if="${error}" class="alert alert-danger shadow-sm small mb-3">
+                    <i class="bi bi-exclamation-triangle-fill me-1"></i> <span th:text="${error}">Errore.</span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold small text-muted">Email / Username</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-0"><i class="bi bi-envelope-fill text-muted"></i></span>
+                        <input type="text" class="form-control bg-light border-0" th:value="${credentials.username}" readonly />
+                    </div>
+                    <div th:if="${credentials.provider == 'GOOGLE'}" class="form-text text-danger d-flex align-items-center gap-1 mt-1 small">
+                        <i class="bi bi-google"></i> Registrato tramite Google OAuth2
+                    </div>
+                    <div th:if="${credentials.provider == 'LOCAL'}" class="form-text text-success d-flex align-items-center gap-1 mt-1 small">
+                        <i class="bi bi-shield-check"></i> Account Locale SIW Tornei
+                    </div>
+                </div>
+
+                <form th:action="@{/utente/profilo}" method="POST">
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label fw-semibold small">Nome</label>
+                            <input type="text" class="form-control" name="nome" th:value="${user != null ? user.nome : ''}" placeholder="Nome" required />
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label fw-semibold small">Cognome</label>
+                            <input type="text" class="form-control" name="cognome" th:value="${user != null ? user.cognome : ''}" placeholder="Cognome" required />
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100 py-2 fw-bold shadow-sm mt-3">
+                        <i class="bi bi-save-fill me-1"></i> Salva Modifiche
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
