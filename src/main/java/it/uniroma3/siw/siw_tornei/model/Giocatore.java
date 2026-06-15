@@ -1,12 +1,17 @@
 package it.uniroma3.siw.siw_tornei.model;
 
-import jakarta.persistence.*;
+import java.time.LocalDate;
+import java.util.Objects;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
-import java.time.LocalDate;
-import java.util.Objects;
 
 @Entity
 public class Giocatore {
@@ -28,42 +33,81 @@ public class Giocatore {
     @NotBlank(message = "Il ruolo è obbligatorio")
     private String ruolo;
 
-    @Min(value = 0, message = "L'altezza non può essere negativa")
+    @Min(value = 0, message = "altezza non può essere negativa")
     private Float altezza;
 
     @ManyToOne // 
     private Squadra squadra;
 
     // Getter e Setter
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public String getNome() { return nome; }
-    public void setNome(String nome) { this.nome = nome; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getCognome() { return cognome; }
-    public void setCognome(String cognome) { this.cognome = cognome; }
+    public String getNome() {
+        return nome;
+    }
 
-    public LocalDate getDataNascita() { return dataNascita; }
-    public void setDataNascita(LocalDate dataNascita) { this.dataNascita = dataNascita; }
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
 
-    public String getRuolo() { return ruolo; }
-    public void setRuolo(String ruolo) { this.ruolo = ruolo; }
+    public String getCognome() {
+        return cognome;
+    }
 
-    public Float getAltezza() { return altezza; }
-    public void setAltezza(Float altezza) { this.altezza = altezza; }
+    public void setCognome(String cognome) {
+        this.cognome = cognome;
+    }
 
-    public Squadra getSquadra() { return squadra; }
-    public void setSquadra(Squadra squadra) { this.squadra = squadra; }
+    public LocalDate getDataNascita() {
+        return dataNascita;
+    }
+
+    public void setDataNascita(LocalDate dataNascita) {
+        this.dataNascita = dataNascita;
+    }
+
+    public String getRuolo() {
+        return ruolo;
+    }
+
+    public void setRuolo(String ruolo) {
+        this.ruolo = ruolo;
+    }
+
+    public Float getAltezza() {
+        return altezza;
+    }
+
+    public void setAltezza(Float altezza) {
+        this.altezza = altezza;
+    }
+
+    public Squadra getSquadra() {
+        return squadra;
+    }
+
+    public void setSquadra(Squadra squadra) {
+        this.squadra = squadra;
+    }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Giocatore giocatore = (Giocatore) o;
-        return Objects.equals(nome, giocatore.nome) && 
-               Objects.equals(cognome, giocatore.cognome) && 
-               Objects.equals(dataNascita, giocatore.dataNascita);
+        return Objects.equals(nome, giocatore.nome)
+                && Objects.equals(cognome, giocatore.cognome)
+                && Objects.equals(dataNascita, giocatore.dataNascita);
     }
 
     @Override

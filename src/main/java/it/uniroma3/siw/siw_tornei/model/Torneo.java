@@ -1,11 +1,17 @@
 package it.uniroma3.siw.siw_tornei.model;
 
-import jakarta.persistence.*;
+import java.util.List;
+import java.util.Objects;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import java.util.Objects;
-import java.util.List;
 
 @Entity
 public class Torneo {
@@ -17,8 +23,8 @@ public class Torneo {
     @NotBlank(message = "Il nome del torneo è obbligatorio")
     private String nome;
 
-    @NotNull(message = "L'anno del torneo è obbligatorio")
-    @Min(value = 1800, message = "L'anno deve essere valido")
+    @NotNull(message = "anno del torneo è obbligatorio")
+    @Min(value = 1800, message = "anno deve essere valido")
     private Integer anno;
 
     @Column(length = 500)
@@ -37,7 +43,6 @@ public class Torneo {
     }
 
     // Qui in futuro aggiungeremo le relazioni con Squadra e Partita
-
     // Getter e Setter
     public Long getId() {
         return id;
@@ -74,10 +79,12 @@ public class Torneo {
     // Override di equals e hashCode (buona pratica per JPA)
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (o == null || getClass() != o.getClass())
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
+        }
         Torneo torneo = (Torneo) o;
         return Objects.equals(nome, torneo.nome) && Objects.equals(anno, torneo.anno);
     }

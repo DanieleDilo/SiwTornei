@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="it">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -18,8 +19,16 @@
             border-radius: 10px;
             overflow-x: auto;
         }
-        .code-block .kw { color: #89b4fa; font-weight: 600; }
-        .code-block .cm { color: #6c7086; font-style: italic; }
+
+        .code-block .kw {
+            color: #89b4fa;
+            font-weight: 600;
+        }
+
+        .code-block .cm {
+            color: #6c7086;
+            font-style: italic;
+        }
 
         .stat-box {
             text-align: center;
@@ -28,27 +37,38 @@
             background: #f8f9fa;
             border: 1px solid #edf2f9;
         }
-        .stat-box .value { font-size: 2rem; font-weight: 700; color: #2b3445; }
+
+        .stat-box .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2b3445;
+        }
+
         .stat-box .label {
-            font-size: 0.7rem; font-weight: 600;
-            text-transform: uppercase; letter-spacing: 1px;
-            color: #6c757d; margin-top: 0.2rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #6c757d;
+            margin-top: 0.2rem;
         }
 
         /* Override card hover for this page so strategy cards don't float */
         .strategy-section .card:hover {
             transform: none;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
         }
     </style>
 </head>
+
 <body class="bg-light">
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm mb-4">
         <div class="container">
             <a class="navbar-brand fw-bold" th:href="@{/}"><i class="bi bi-trophy-fill text-warning"></i> SIW Tornei</a>
             <div class="d-flex gap-2">
-                <a class="btn btn-outline-light btn-sm" th:href="@{/admin/index}"><i class="bi bi-arrow-left"></i> Pannello Admin</a>
+                <a class="btn btn-outline-light btn-sm" th:href="@{/admin/index}"><i class="bi bi-arrow-left"></i>
+                    Pannello Admin</a>
             </div>
         </div>
     </nav>
@@ -57,8 +77,10 @@
 
         <!-- Header -->
         <div class="mb-4">
-            <h2 class="fw-bold text-dark"><i class="bi bi-lightning-charge-fill text-warning"></i> Analisi Sperimentale JPA &amp; Hibernate</h2>
-            <p class="text-muted">Studio comparativo delle strategie di caricamento dati per risolvere il problema N+1 Query. (§8.2 traccia esame)</p>
+            <h2 class="fw-bold text-dark"><i class="bi bi-lightning-charge-fill text-warning"></i> Analisi Sperimentale
+                JPA &amp; Hibernate</h2>
+            <p class="text-muted">Studio comparativo delle strategie di caricamento dati per risolvere il problema N+1
+                Query. (§8.2 traccia esame)</p>
         </div>
 
         <!-- No data state -->
@@ -70,7 +92,8 @@
                     Non ci sono tornei nel database. Genera dei dati di test per eseguire l'analisi.
                 </p>
                 <form th:action="@{/admin/performance-analysis/generate-mock}" method="POST" class="d-inline">
-                    <button type="submit" class="btn btn-success fw-bold px-4"><i class="bi bi-magic"></i> Genera Dati di Test</button>
+                    <button type="submit" class="btn btn-success fw-bold px-4"><i class="bi bi-magic"></i> Genera Dati
+                        di Test</button>
                 </form>
             </div>
         </div>
@@ -80,13 +103,15 @@
 
             <!-- Success alert -->
             <div th:if="${generated}" class="alert alert-success border-0 shadow-sm mb-4">
-                <i class="bi bi-check-circle-fill"></i> Dati di test generati con successo. Il benchmark è stato eseguito automaticamente.
+                <i class="bi bi-check-circle-fill"></i> Dati di test generati con successo. Il benchmark è stato
+                eseguito automaticamente.
             </div>
 
             <!-- ====== TIMING BARS ====== -->
             <div class="card border-0 shadow-sm mb-4">
                 <div class="card-body p-4">
-                    <h5 class="fw-bold text-dark mb-4"><i class="bi bi-stopwatch text-primary"></i> Tempi di Risposta (ms)</h5>
+                    <h5 class="fw-bold text-dark mb-4"><i class="bi bi-stopwatch text-primary"></i> Tempi di Risposta
+                        (ms)</h5>
 
                     <!-- LAZY -->
                     <div class="d-flex justify-content-between align-items-center mb-1">
@@ -94,7 +119,8 @@
                         <span class="fw-bold text-danger small" th:text="${result.tempoLazy} + ' ms'">0 ms</span>
                     </div>
                     <div class="progress mb-3" style="height: 8px; border-radius: 4px;">
-                        <div class="progress-bar bg-danger" role="progressbar" th:style="'width:' + ${result.barLazy} + '%'"></div>
+                        <div class="progress-bar bg-danger" role="progressbar"
+                            th:style="'width:' + ${result.barLazy} + '%'"></div>
                     </div>
 
                     <!-- JOIN FETCH -->
@@ -103,7 +129,8 @@
                         <span class="fw-bold text-success small" th:text="${result.tempoJoin} + ' ms'">0 ms</span>
                     </div>
                     <div class="progress mb-3" style="height: 8px; border-radius: 4px;">
-                        <div class="progress-bar bg-success" role="progressbar" th:style="'width:' + ${result.barJoin} + '%'"></div>
+                        <div class="progress-bar bg-success" role="progressbar"
+                            th:style="'width:' + ${result.barJoin} + '%'"></div>
                     </div>
 
                     <!-- EntityGraph -->
@@ -112,7 +139,8 @@
                         <span class="fw-bold text-primary small" th:text="${result.tempoGraph} + ' ms'">0 ms</span>
                     </div>
                     <div class="progress" style="height: 8px; border-radius: 4px;">
-                        <div class="progress-bar bg-primary" role="progressbar" th:style="'width:' + ${result.barGraph} + '%'"></div>
+                        <div class="progress-bar bg-primary" role="progressbar"
+                            th:style="'width:' + ${result.barGraph} + '%'"></div>
                     </div>
                 </div>
             </div>
@@ -153,11 +181,14 @@
                         </div>
                     </div>
 
-                    <p class="small text-muted text-uppercase fw-semibold mb-2" style="letter-spacing: 0.5px;">Query SQL generata:</p>
+                    <p class="small text-muted text-uppercase fw-semibold mb-2" style="letter-spacing: 0.5px;">Query SQL
+                        generata:</p>
                     <div class="code-block">
                         <span class="kw">SELECT</span> t.* <span class="kw">FROM</span> torneo t;<br>
                         <span class="cm">-- poi per ogni torneo:</span><br>
-                        <span class="kw">SELECT</span> s.* <span class="kw">FROM</span> squadra s <span class="kw">JOIN</span> iscrizione_squadra_torneo ist <span class="kw">ON</span> ... <span class="kw">WHERE</span> ist.torneo_id = ?;
+                        <span class="kw">SELECT</span> s.* <span class="kw">FROM</span> squadra s <span
+                            class="kw">JOIN</span> iscrizione_squadra_torneo ist <span class="kw">ON</span> ... <span
+                            class="kw">WHERE</span> ist.torneo_id = ?;
                     </div>
                 </div>
             </div>
@@ -167,7 +198,8 @@
                 <div class="card-body p-4">
                     <div class="d-flex justify-content-between align-items-start mb-3">
                         <h5 class="fw-bold text-dark mb-0">2. JOIN FETCH (JPQL custom)</h5>
-                        <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 fw-bold">
+                        <span
+                            class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 fw-bold">
                             <i class="bi bi-check-lg"></i> OTTIMALE
                         </span>
                     </div>
@@ -198,12 +230,15 @@
                         </div>
                     </div>
 
-                    <p class="small text-muted text-uppercase fw-semibold mb-2" style="letter-spacing: 0.5px;">Query SQL generata:</p>
+                    <p class="small text-muted text-uppercase fw-semibold mb-2" style="letter-spacing: 0.5px;">Query SQL
+                        generata:</p>
                     <div class="code-block">
-                        <span class="kw">SELECT DISTINCT</span> t <span class="kw">FROM</span> Torneo t <span class="kw">LEFT JOIN FETCH</span> t.squadre<br>
+                        <span class="kw">SELECT DISTINCT</span> t <span class="kw">FROM</span> Torneo t <span
+                            class="kw">LEFT JOIN FETCH</span> t.squadre<br>
                         <span class="cm">-- tradotto da Hibernate in:</span><br>
                         <span class="kw">SELECT DISTINCT</span> t.*, s.* <span class="kw">FROM</span> torneo t<br>
-                        <span class="kw">LEFT JOIN</span> iscrizione_squadra_torneo ist <span class="kw">ON</span> t.id = ist.torneo_id<br>
+                        <span class="kw">LEFT JOIN</span> iscrizione_squadra_torneo ist <span class="kw">ON</span> t.id
+                        = ist.torneo_id<br>
                         <span class="kw">LEFT JOIN</span> squadra s <span class="kw">ON</span> ist.squadra_id = s.id;
                     </div>
                 </div>
@@ -214,7 +249,8 @@
                 <div class="card-body p-4">
                     <div class="d-flex justify-content-between align-items-start mb-3">
                         <h5 class="fw-bold text-dark mb-0">3. EntityGraph (@EntityGraph annotation)</h5>
-                        <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 fw-bold">
+                        <span
+                            class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 fw-bold">
                             <i class="bi bi-check-lg"></i> OTTIMALE
                         </span>
                     </div>
@@ -246,12 +282,15 @@
                         </div>
                     </div>
 
-                    <p class="small text-muted text-uppercase fw-semibold mb-2" style="letter-spacing: 0.5px;">Query SQL generata:</p>
+                    <p class="small text-muted text-uppercase fw-semibold mb-2" style="letter-spacing: 0.5px;">Query SQL
+                        generata:</p>
                     <div class="code-block">
                         <span class="cm">-- Generato automaticamente da @EntityGraph:</span><br>
                         <span class="kw">SELECT DISTINCT</span> t.*, s.* <span class="kw">FROM</span> torneo t<br>
-                        <span class="kw">LEFT OUTER JOIN</span> iscrizione_squadra_torneo ist <span class="kw">ON</span> t.id = ist.torneo_id<br>
-                        <span class="kw">LEFT OUTER JOIN</span> squadra s <span class="kw">ON</span> ist.squadra_id = s.id;
+                        <span class="kw">LEFT OUTER JOIN</span> iscrizione_squadra_torneo ist <span class="kw">ON</span>
+                        t.id = ist.torneo_id<br>
+                        <span class="kw">LEFT OUTER JOIN</span> squadra s <span class="kw">ON</span> ist.squadra_id =
+                        s.id;
                     </div>
                 </div>
             </div>
@@ -260,7 +299,7 @@
             <div class="card border-0 shadow-sm border-start border-4 border-success mb-4">
                 <div class="card-body p-4">
                     <h4 class="fw-bold text-dark mb-3">
-                        <i class="bi bi-journal-bookmark-fill text-success"></i> Conclusioni &amp; Scelta Implementativa
+                        <i class="bi bi-journal-bookmark-fill text-success"></i> Conclusioni
                     </h4>
                     <p class="text-muted mb-0" style="line-height: 1.8;">
                         Nel progetto è stata adottata la strategia <strong class="text-success">EntityGraph</strong>.
@@ -280,4 +319,5 @@
     </div>
 
 </body>
+
 </html>

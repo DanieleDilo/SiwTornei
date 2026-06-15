@@ -1,11 +1,17 @@
 package it.uniroma3.siw.siw_tornei.model;
 
-import jakarta.persistence.*;
+import java.util.List;
+import java.util.Objects;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import java.util.List;
-import java.util.Objects;
 
 @Entity
 public class Squadra {
@@ -17,8 +23,8 @@ public class Squadra {
     @NotBlank(message = "Il nome del club è obbligatorio")
     private String nome;
 
-    @NotNull(message = "L'anno di fondazione è obbligatorio")
-    @Min(value = 1800, message = "L'anno di fondazione deve essere valido")
+    @NotNull(message = "anno di fondazione è obbligatorio")
+    @Min(value = 1800, message = "anno di fondazione deve essere valido")
     private Integer annoFondazione;
 
     @NotBlank(message = "La città è obbligatoria")
@@ -82,10 +88,12 @@ public class Squadra {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o)
+        if (this == o) {
             return true;
-        if (o == null || getClass() != o.getClass())
+        }
+        if (o == null || getClass() != o.getClass()) {
             return false;
+        }
         Squadra squadra = (Squadra) o;
         return Objects.equals(nome, squadra.nome) && Objects.equals(citta, squadra.citta);
     }

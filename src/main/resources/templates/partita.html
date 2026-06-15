@@ -20,9 +20,11 @@
                 <a sec:authorize="hasAuthority('ADMIN')" class="btn btn-outline-light btn-sm" th:href="@{/admin/index}">
                     <i class="bi bi-person-lock"></i> Area Admin
                 </a>
-                <a sec:authorize="isAuthenticated()" class="btn btn-light btn-sm" th:href="@{/logout}">
-                    <i class="bi bi-box-arrow-right"></i> Logout
-                </a>
+                <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" class="m-0">
+                    <button type="submit" class="btn btn-light btn-sm">
+                        <i class="bi bi-box-arrow-right"></i> Logout
+                    </button>
+                </form>
                 <a sec:authorize="isAnonymous()" class="btn btn-outline-light btn-sm" th:href="@{/login}">
                     <i class="bi bi-box-arrow-in-right"></i> Accedi
                 </a>
