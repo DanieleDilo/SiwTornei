@@ -222,24 +222,33 @@ public class AdminController {
 
     // 2. Salva il risultato nel DB e segna la partita come conclusa (PLAYED)
     @PostMapping("/admin/partita/{id}/risultato")
-    public String updateRisultato(@PathVariable("id") Long id, @Valid @ModelAttribute("partita") Partita datiAggiornati, BindingResult bindingResult) {
-        if (datiAggiornati.getGoalsHome() == null) {
-            bindingResult.rejectValue("goalsHome", "required", "I gol della squadra in casa sono obbligatori");
+    public String updateRisultato(@PathVariable("id") Long id, @ModelAttribute("partita") Partita datiAggiornati, Model model) {
+        boolean hasErrors = false;
+
+        if (datiAggiornati.getGoalsHome() == null || datiAggiornati.getGoalsHome() < 0) {
+            hasErrors = true;
         }
-        if (datiAggiornati.getGoalsAway() == null) {
-            bindingResult.rejectValue("goalsAway", "required", "I gol della squadra in trasferta sono obbligatori");
+        if (datiAggiornati.getGoalsAway() == null || datiAggiornati.getGoalsAway() < 0) {
+            hasErrors = true;
         }
-        if (bindingResult.hasErrors()) {
+
+        if (hasErrors) {
             Partita partitaOriginale = this.partitaService.findById(id);
             if (partitaOriginale != null) {
+                datiAggiornati.setId(id);
                 datiAggiornati.setTorneo(partitaOriginale.getTorneo());
                 datiAggiornati.setSquadraCasa(partitaOriginale.getSquadraCasa());
                 datiAggiornati.setSquadraTrasferta(partitaOriginale.getSquadraTrasferta());
+                datiAggiornati.setDataOra(partitaOriginale.getDataOra());
+                datiAggiornati.setLuogo(partitaOriginale.getLuogo());
+                datiAggiornati.setArbitro(partitaOriginale.getArbitro());
             }
+            model.addAttribute("partita", datiAggiornati);
+            model.addAttribute("errore", "Inserisci un valore valido per i gol di entrambe le squadre.");
             return "admin/formUpdatePartita";
         }
         this.partitaService.updateRisultato(id, datiAggiornati);
-        return "redirect:/admin/index";
+        return "redirect:/partite";
     }
 
     // --- ELIMINA TORNEO ---
@@ -427,18 +436,18 @@ public class AdminController {
     // --- ANALISI PERFORMANCE (Punto 8) ---
     @GetMapping("/admin/performance-analysis")
     public String performanceAnalysis(
-            @RequestParam(value = "runBenchmarkId", required = false) Long runBenchmarkId,
             @RequestParam(value = "generated", required = false) Boolean generated,
             Model model) {
         
         List<Torneo> tornei = this.torneoService.findAll();
-        model.addAttribute("tornei", tornei);
         model.addAttribute("generated", generated);
 
-        if (runBenchmarkId != null) {
-            java.util.Map<String, Object> benchmarkResult = this.performanceAnalysisService.eseguiBenchmark(runBenchmarkId);
+        if (!tornei.isEmpty()) {
+            // Auto-run benchmark sul primo torneo disponibile
+            Torneo torneo = tornei.get(0);
+            java.util.Map<String, Object> benchmarkResult = this.performanceAnalysisService.eseguiBenchmark(torneo.getId());
             model.addAttribute("result", benchmarkResult);
-            model.addAttribute("activeTorneoId", runBenchmarkId);
+            model.addAttribute("torneoNome", torneo.getNome());
         }
 
         return "admin/performanceAnalysis";
@@ -446,7 +455,7 @@ public class AdminController {
 
     @PostMapping("/admin/performance-analysis/generate-mock")
     public String generateMockData() {
-        Long generatedId = this.performanceAnalysisService.generaDatiDiTest();
-        return "redirect:/admin/performance-analysis?runBenchmarkId=" + generatedId + "&generated=true";
+        this.performanceAnalysisService.generaDatiDiTest();
+        return "redirect:/admin/performance-analysis?generated=true";
     }
 }

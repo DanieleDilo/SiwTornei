@@ -58,11 +58,11 @@ public class SquadraService {
                     this.partitaService.deletePartita(p.getId());
                 }
             }
-            // 2. Disassociate players from the team
+            // 2. Delete all players of this team
             if (squadra.getGiocatori() != null) {
-                for (Giocatore g : squadra.getGiocatori()) {
-                    g.setSquadra(null);
-                    this.giocatoreRepository.save(g);
+                List<Giocatore> giocatoriDaEliminare = new ArrayList<>(squadra.getGiocatori());
+                for (Giocatore g : giocatoriDaEliminare) {
+                    this.giocatoreRepository.delete(g);
                 }
             }
             // 3. Delete team

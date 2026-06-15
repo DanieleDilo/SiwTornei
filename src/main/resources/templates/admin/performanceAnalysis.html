@@ -3,235 +3,279 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Analisi Sperimentale Performance - SIW Tornei</title>
+    <title>Analisi Sperimentale JPA - SIW Tornei</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <style>
-        .metric-card {
-            border-radius: 12px;
-            border: 1px solid rgba(0,0,0,0.08);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .metric-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.06);
-        }
         .code-block {
-            background-color: #f8f9fa;
-            border-left: 4px solid #0d6efd;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 0.9rem;
-            padding: 15px;
-            border-radius: 0 8px 8px 0;
+            background-color: #1e1e2e;
+            color: #cdd6f4;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            line-height: 1.7;
+            padding: 1.2rem 1.5rem;
+            border-radius: 10px;
             overflow-x: auto;
+        }
+        .code-block .kw { color: #89b4fa; font-weight: 600; }
+        .code-block .cm { color: #6c7086; font-style: italic; }
+
+        .stat-box {
+            text-align: center;
+            padding: 1rem;
+            border-radius: 12px;
+            background: #f8f9fa;
+            border: 1px solid #edf2f9;
+        }
+        .stat-box .value { font-size: 2rem; font-weight: 700; color: #2b3445; }
+        .stat-box .label {
+            font-size: 0.7rem; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 1px;
+            color: #6c757d; margin-top: 0.2rem;
+        }
+
+        /* Override card hover for this page so strategy cards don't float */
+        .strategy-section .card:hover {
+            transform: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
         }
     </style>
 </head>
 <body class="bg-light">
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow mb-4">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm mb-4">
         <div class="container">
-            <a class="navbar-brand fw-bold" th:href="@{/admin/index}"><i class="bi bi-speedometer2"></i> Dashboard Admin</a>
-            <div class="d-flex">
+            <a class="navbar-brand fw-bold" th:href="@{/}"><i class="bi bi-trophy-fill text-warning"></i> SIW Tornei</a>
+            <div class="d-flex gap-2">
                 <a class="btn btn-outline-light btn-sm" th:href="@{/admin/index}"><i class="bi bi-arrow-left"></i> Pannello Admin</a>
             </div>
         </div>
     </nav>
 
     <div class="container pb-5">
-        <div class="row">
-            <div class="col-12">
-                <h2 class="fw-bold text-dark mb-1"><i class="bi bi-lightning-charge-fill text-warning"></i> Analisi Sperimentale delle Performance</h2>
-                <p class="text-muted">Requisito di Progetto (Sezione 8.2) — Studio e benchmark dei tempi di caricamento al variare delle strategie di Fetch.</p>
-                <hr class="mb-4">
+
+        <!-- Header -->
+        <div class="mb-4">
+            <h2 class="fw-bold text-dark"><i class="bi bi-lightning-charge-fill text-warning"></i> Analisi Sperimentale JPA &amp; Hibernate</h2>
+            <p class="text-muted">Studio comparativo delle strategie di caricamento dati per risolvere il problema N+1 Query. (§8.2 traccia esame)</p>
+        </div>
+
+        <!-- No data state -->
+        <div th:if="${result == null}" class="card border-0 shadow-sm text-center py-5">
+            <div class="card-body">
+                <i class="bi bi-bar-chart-line display-1 text-muted"></i>
+                <h4 class="fw-bold text-muted mt-3">Nessun dato disponibile</h4>
+                <p class="text-muted mx-auto mb-4" style="max-width: 450px;">
+                    Non ci sono tornei nel database. Genera dei dati di test per eseguire l'analisi.
+                </p>
+                <form th:action="@{/admin/performance-analysis/generate-mock}" method="POST" class="d-inline">
+                    <button type="submit" class="btn btn-success fw-bold px-4"><i class="bi bi-magic"></i> Genera Dati di Test</button>
+                </form>
             </div>
         </div>
 
-        <div class="row g-4">
-            <!-- Colonna Sinistra: Seleziona Torneo / Genera Dati -->
-            <div class="col-lg-4">
-                <div class="card shadow-sm border-0 mb-4">
-                    <div class="card-header bg-primary text-white fw-bold">
-                        <i class="bi bi-collection"></i> 1. Seleziona Torneo
+        <!-- Results -->
+        <div th:if="${result != null}" class="strategy-section">
+
+            <!-- Success alert -->
+            <div th:if="${generated}" class="alert alert-success border-0 shadow-sm mb-4">
+                <i class="bi bi-check-circle-fill"></i> Dati di test generati con successo. Il benchmark è stato eseguito automaticamente.
+            </div>
+
+            <!-- ====== TIMING BARS ====== -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold text-dark mb-4"><i class="bi bi-stopwatch text-primary"></i> Tempi di Risposta (ms)</h5>
+
+                    <!-- LAZY -->
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="fw-semibold small">1. LAZY (default)</span>
+                        <span class="fw-bold text-danger small" th:text="${result.tempoLazy} + ' ms'">0 ms</span>
                     </div>
-                    <div class="card-body">
-                        <p class="small text-muted mb-3">Scegli un torneo esistente su cui eseguire il benchmark in tempo reale.</p>
-                        
-                        <form th:action="@{/admin/performance-analysis}" method="GET" class="mb-4" th:if="${tornei != null and !tornei.isEmpty()}">
-                            <div class="mb-3">
-                                <label class="form-label small fw-semibold">Torneo disponibile:</label>
-                                <select name="runBenchmarkId" class="form-select" required>
-                                    <option value="" disabled selected>-- Seleziona --</option>
-                                    <option th:each="t : ${tornei}" th:value="${t.id}" th:text="${t.nome} + ' (' + ${t.anno} + ')'"
-                                            th:selected="${t.id == activeTorneoId}"></option>
-                                </select>
-                            </div>
-                            <button type="submit" class="btn btn-primary w-100 fw-bold">
-                                <i class="bi bi-play-fill"></i> Esegui Benchmark
-                            </button>
-                        </form>
-
-                        <div th:unless="${tornei != null and !tornei.isEmpty()}" class="alert alert-warning small mb-4">
-                            <i class="bi bi-exclamation-triangle-fill"></i> Nessun torneo presente nel database.
-                        </div>
-
-                        <hr class="my-4">
-
-                        <h5 class="fw-bold text-success mb-2"><i class="bi bi-database-fill-add"></i> Genera Dati di Test</h5>
-                        <p class="small text-muted mb-3">Non hai abbastanza dati o vuoi un test standardizzato? Clicca sul pulsante qui sotto per creare un torneo fittizio con 5 squadre iscritte e 75 giocatori totali, ed eseguire automaticamente il benchmark.</p>
-                        
-                        <form th:action="@{/admin/performance-analysis/generate-mock}" method="POST">
-                            <button type="submit" class="btn btn-success w-100 fw-bold">
-                                <i class="bi bi-magic"></i> Genera Dati & Testa
-                            </button>
-                        </form>
+                    <div class="progress mb-3" style="height: 8px; border-radius: 4px;">
+                        <div class="progress-bar bg-danger" role="progressbar" th:style="'width:' + ${result.barLazy} + '%'"></div>
                     </div>
-                </div>
 
-                <div class="card shadow-sm border-0">
-                    <div class="card-header bg-secondary text-white fw-bold">
-                        <i class="bi bi-info-circle-fill"></i> N+1 Query & Hibernate Bag
+                    <!-- JOIN FETCH -->
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="fw-semibold small">2. JOIN FETCH (JPQL custom)</span>
+                        <span class="fw-bold text-success small" th:text="${result.tempoJoin} + ' ms'">0 ms</span>
                     </div>
-                    <div class="card-body small">
-                        <p><strong>Il Problema N+1:</strong> Quando carichiamo una lista di entità (es. Squadre) e per ciascuna di esse accediamo a una collezione lazy (es. Giocatori), Hibernate esegue 1 query iniziale per le squadre e N query per caricare i giocatori di ogni squadra. Questo degrada drasticamente i tempi di risposta all'aumentare di N.</p>
-                        <p><strong>Hibernate MultipleBagFetchException:</strong> In JPA non è possibile eseguire il JOIN FETCH simultaneo di più collezioni di tipo <code>List</code> (chiamate "bag"). Per ottimizzare ed evitare l'eccezione, abbiamo implementato una strategia multi-query coordinata che riduce le query a sole 2, caricando l'intero grafo di oggetti in memoria.</p>
+                    <div class="progress mb-3" style="height: 8px; border-radius: 4px;">
+                        <div class="progress-bar bg-success" role="progressbar" th:style="'width:' + ${result.barJoin} + '%'"></div>
+                    </div>
+
+                    <!-- EntityGraph -->
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <span class="fw-semibold small">3. EntityGraph (@EntityGraph annotation)</span>
+                        <span class="fw-bold text-primary small" th:text="${result.tempoGraph} + ' ms'">0 ms</span>
+                    </div>
+                    <div class="progress" style="height: 8px; border-radius: 4px;">
+                        <div class="progress-bar bg-primary" role="progressbar" th:style="'width:' + ${result.barGraph} + '%'"></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Colonna Destra: Risultati del Benchmark -->
-            <div class="col-lg-8">
-                <!-- Mostra quando non c'è ancora un benchmark in esecuzione -->
-                <div th:if="${result == null}" class="card border-0 shadow-sm text-center py-5">
-                    <div class="card-body">
-                        <i class="bi bi-bar-chart-line display-1 text-muted"></i>
-                        <h4 class="fw-bold text-muted mt-3">Pronto per il Test</h4>
-                        <p class="text-muted mx-auto" style="max-width: 500px;">Seleziona un torneo dall'elenco a sinistra oppure genera dati di test automatici per visualizzare il grafico e le metriche prestazionali.</p>
+            <!-- ====== STRATEGY 1: LAZY ====== -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h5 class="fw-bold text-dark mb-0">1. LAZY (default)</h5>
+                        <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-2 fw-bold">
+                            <i class="bi bi-exclamation-triangle-fill"></i> N+1 PROBLEM
+                        </span>
                     </div>
-                </div>
+                    <p class="text-muted" style="max-width: 700px;">
+                        Hibernate carica le collection solo al primo accesso. Con N tornei genera 1 query per i
+                        tornei + 1 query per le squadre di ciascun torneo → problema N+1 query. Problema: se ci
+                        sono 10 tornei, vengono eseguite 11 query totali.
+                    </p>
 
-                <!-- Risultati del Benchmark -->
-                <div th:if="${result != null}" class="card border-0 shadow-sm mb-4">
-                    <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-                        <span class="fw-bold"><i class="bi bi-activity text-warning"></i> Risultati del Benchmark in Tempo Reale</span>
-                        <span class="badge bg-success" th:text="${result.torneoNome}">Torneo</span>
+                    <div class="row g-3 mb-4">
+                        <div class="col-4">
+                            <div class="stat-box">
+                                <div class="value" th:text="${result.queriesLazy}">0</div>
+                                <div class="label">Query SQL</div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="stat-box">
+                                <div class="value" th:text="${result.torneiLazy}">0</div>
+                                <div class="label">Tornei</div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="stat-box">
+                                <div class="value" th:text="${result.squadreLazy}">0</div>
+                                <div class="label">Squadre</div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="card-body p-4">
-                        
-                        <div class="alert alert-success border-0 shadow-sm d-flex align-items-center gap-3 mb-4" th:if="${generated}">
-                            <i class="bi bi-check-circle-fill fs-3 text-success"></i>
-                            <div>
-                                <h6 class="fw-bold mb-0">Dati di Test Generati Correttamente!</h6>
-                                <p class="small mb-0 opacity-75">Creato torneo con successo contenente 5 squadre iscritte e 75 giocatori complessivi.</p>
-                            </div>
-                        </div>
 
-                        <!-- Statistiche Caricamento -->
-                        <div class="row text-center mb-4">
-                            <div class="col-6 col-md-3">
-                                <div class="p-2 border rounded bg-light">
-                                    <span class="small text-muted d-block">Squadre Caricate</span>
-                                    <strong class="fs-4 text-dark" th:text="${result.numSquadre}">0</strong>
-                                </div>
-                            </div>
-                            <div class="col-6 col-md-3">
-                                <div class="p-2 border rounded bg-light">
-                                    <span class="small text-muted d-block">Giocatori Caricati</span>
-                                    <strong class="fs-4 text-dark" th:text="${result.numGiocatori}">0</strong>
-                                </div>
-                            </div>
-                            <div class="col-6 col-md-3 mt-3 mt-md-0">
-                                <div class="p-2 border rounded bg-light">
-                                    <span class="small text-muted d-block">Query Eseguite (Lazy)</span>
-                                    <strong class="fs-4 text-danger" th:text="${result.queriesLazy}">0</strong>
-                                </div>
-                            </div>
-                            <div class="col-6 col-md-3 mt-3 mt-md-0">
-                                <div class="p-2 border rounded bg-light">
-                                    <span class="small text-muted d-block">Query Eseguite (Join Fetch)</span>
-                                    <strong class="fs-4 text-success" th:text="${result.queriesJoin}">2</strong>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Grafico Tempi di Risposta -->
-                        <h5 class="fw-bold text-dark mb-3"><i class="bi bi-stopwatch"></i> Tempo di Caricamento (millisecondi)</h5>
-                        
-                        <div class="mb-4">
-                            <!-- Lazy Fetch -->
-                            <div class="d-flex justify-content-between mb-1 small fw-semibold">
-                                <span>Fetch Standard (LAZY + N+1 Queries)</span>
-                                <span class="text-danger" th:text="${result.tempoLazy} + ' ms'">0.00 ms</span>
-                            </div>
-                            <div class="progress mb-3" style="height: 25px;">
-                                <div class="progress-bar bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">LAZY FETCH</div>
-                            </div>
-
-                            <!-- Join Fetch -->
-                            <div class="d-flex justify-content-between mb-1 small fw-semibold">
-                                <span>Fetch Ottimizzato (JOIN FETCH / Multi-Query)</span>
-                                <span class="text-success" th:text="${result.tempoJoin} + ' ms'">0.00 ms</span>
-                            </div>
-                            <div class="progress" style="height: 25px;">
-                                <div class="progress-bar bg-success" role="progressbar" 
-                                     th:style="'width: ' + (${Double.parseDouble(result.tempoLazy) > 0 ? (Double.parseDouble(result.tempoJoin) / Double.parseDouble(result.tempoLazy) * 100) : 5}) + '%'" 
-                                     aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">JOIN FETCH</div>
-                            </div>
-                        </div>
-
-                        <!-- Banner di Miglioramento -->
-                        <div class="bg-success-subtle text-success p-3 rounded border border-success-subtle d-flex align-items-center gap-3 mb-4">
-                            <i class="bi bi-graph-up fs-2"></i>
-                            <div>
-                                <h5 class="fw-bold mb-0">Performance migliorata del <span th:text="${result.miglioramento}">0.0</span>% !</h5>
-                                <p class="small mb-0 opacity-75">La strategia ottimizzata basata su due sole query aggregate evita i molteplici round-trip verso il database, caricando l'intero grafo in modo estremamente più veloce.</p>
-                            </div>
-                        </div>
-
-                        <!-- Spiegazione Dettagliata per il Report -->
-                        <h5 class="fw-bold text-dark mb-3"><i class="bi bi-journal-code"></i> Dettaglio dell'Ottimizzazione</h5>
-                        <p class="small text-muted">Di seguito viene riportato il confronto del codice Java e JPQL utilizzato nelle due rispettive strategie messe a benchmark:</p>
-                        
-                        <div class="mb-3">
-                            <h6 class="fw-bold text-danger mb-1">1. Strategia inefficiente (Lazy Loading)</h6>
-                            <div class="code-block mb-2">
-// 1. Carica il Torneo dal DB (1 query)
-Torneo torneo = torneoRepository.findById(id).orElse(null);
-
-// 2. Naviga la relazione ed ottiene la lista squadre (1 query aggiuntiva all'accesso)
-for(Squadra s : torneo.getSquadre()) {
-    // 3. Per ciascuna squadra, accede ai giocatori (N query aggiuntive)
-    List&lt;Giocatore&gt; giocatori = s.getGiocatori();
-    giocatori.size(); // Innesca la query Lazy
-}
-// Query totali generate: 2 + N (Dove N è il numero di squadre)
-                            </div>
-                        </div>
-
-                        <div>
-                            <h6 class="fw-bold text-success mb-1">2. Strategia ottimizzata (Multi-Query JOIN FETCH)</h6>
-                            <div class="code-block">
-// Query 1 in TorneoRepository (JOIN FETCH del torneo e delle sue squadre in un'unica operazione)
-@Query("SELECT DISTINCT t FROM Torneo t LEFT JOIN FETCH t.squadre WHERE t.id = :id")
-Optional&lt;Torneo&gt; findByIdWithSquadre(@Param("id") Long id);
-
-// Query 2 in TorneoRepository (JOIN FETCH di tutte le rose dei giocatori per le squadre in esame)
-@Query("SELECT DISTINCT s FROM Squadra s LEFT JOIN FETCH s.giocatori WHERE s IN :squadre")
-List&lt;Squadra&gt; fetchSquadreWithGiocatori(@Param("squadre") List&lt;Squadra&gt; squadre);
-
-// Utilizzo nel Service Layer:
-Torneo t = torneoRepository.findByIdWithSquadre(id).orElse(null);
-if (t != null &amp;&amp; !t.getSquadre().isEmpty()) {
-    torneoRepository.fetchSquadreWithGiocatori(t.getSquadre());
-}
-// Query totali generate: esattamente 2. Previene il problema N+1 ed evita MultipleBagFetchException.
-                            </div>
-                        </div>
-
+                    <p class="small text-muted text-uppercase fw-semibold mb-2" style="letter-spacing: 0.5px;">Query SQL generata:</p>
+                    <div class="code-block">
+                        <span class="kw">SELECT</span> t.* <span class="kw">FROM</span> torneo t;<br>
+                        <span class="cm">-- poi per ogni torneo:</span><br>
+                        <span class="kw">SELECT</span> s.* <span class="kw">FROM</span> squadra s <span class="kw">JOIN</span> iscrizione_squadra_torneo ist <span class="kw">ON</span> ... <span class="kw">WHERE</span> ist.torneo_id = ?;
                     </div>
                 </div>
             </div>
+
+            <!-- ====== STRATEGY 2: JOIN FETCH ====== -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h5 class="fw-bold text-dark mb-0">2. JOIN FETCH (JPQL custom)</h5>
+                        <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 fw-bold">
+                            <i class="bi bi-check-lg"></i> OTTIMALE
+                        </span>
+                    </div>
+                    <p class="text-muted" style="max-width: 700px;">
+                        Una singola query JPQL con LEFT JOIN FETCH carica Tornei e Squadre in un unico round-trip
+                        al database. DISTINCT previene i duplicati causati dalla relazione ManyToMany.
+                        Soluzione ottimale per leggibilità e prestazioni.
+                    </p>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-4">
+                            <div class="stat-box">
+                                <div class="value" th:text="${result.queriesJoin}">0</div>
+                                <div class="label">Query SQL</div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="stat-box">
+                                <div class="value" th:text="${result.torneiJoin}">0</div>
+                                <div class="label">Tornei</div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="stat-box">
+                                <div class="value" th:text="${result.squadreJoin}">0</div>
+                                <div class="label">Squadre</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="small text-muted text-uppercase fw-semibold mb-2" style="letter-spacing: 0.5px;">Query SQL generata:</p>
+                    <div class="code-block">
+                        <span class="kw">SELECT DISTINCT</span> t <span class="kw">FROM</span> Torneo t <span class="kw">LEFT JOIN FETCH</span> t.squadre<br>
+                        <span class="cm">-- tradotto da Hibernate in:</span><br>
+                        <span class="kw">SELECT DISTINCT</span> t.*, s.* <span class="kw">FROM</span> torneo t<br>
+                        <span class="kw">LEFT JOIN</span> iscrizione_squadra_torneo ist <span class="kw">ON</span> t.id = ist.torneo_id<br>
+                        <span class="kw">LEFT JOIN</span> squadra s <span class="kw">ON</span> ist.squadra_id = s.id;
+                    </div>
+                </div>
+            </div>
+
+            <!-- ====== STRATEGY 3: EntityGraph ====== -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h5 class="fw-bold text-dark mb-0">3. EntityGraph (@EntityGraph annotation)</h5>
+                        <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 fw-bold">
+                            <i class="bi bi-check-lg"></i> OTTIMALE
+                        </span>
+                    </div>
+                    <p class="text-muted" style="max-width: 700px;">
+                        L'annotazione @EntityGraph(attributePaths = {"squadre"}) sul metodo del repository
+                        istruisce Hibernate a caricare le squadre con un LEFT OUTER JOIN. Approccio
+                        dichiarativo: nessuna query JPQL manuale. Genera lo stesso numero di query della
+                        strategia JOIN FETCH (1 sola), con maggiore separazione delle responsabilità.
+                    </p>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-4">
+                            <div class="stat-box">
+                                <div class="value" th:text="${result.queriesGraph}">0</div>
+                                <div class="label">Query SQL</div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="stat-box">
+                                <div class="value" th:text="${result.torneiGraph}">0</div>
+                                <div class="label">Tornei</div>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="stat-box">
+                                <div class="value" th:text="${result.squadreGraph}">0</div>
+                                <div class="label">Squadre</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="small text-muted text-uppercase fw-semibold mb-2" style="letter-spacing: 0.5px;">Query SQL generata:</p>
+                    <div class="code-block">
+                        <span class="cm">-- Generato automaticamente da @EntityGraph:</span><br>
+                        <span class="kw">SELECT DISTINCT</span> t.*, s.* <span class="kw">FROM</span> torneo t<br>
+                        <span class="kw">LEFT OUTER JOIN</span> iscrizione_squadra_torneo ist <span class="kw">ON</span> t.id = ist.torneo_id<br>
+                        <span class="kw">LEFT OUTER JOIN</span> squadra s <span class="kw">ON</span> ist.squadra_id = s.id;
+                    </div>
+                </div>
+            </div>
+
+            <!-- ====== CONCLUSION ====== -->
+            <div class="card border-0 shadow-sm border-start border-4 border-success mb-4">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold text-dark mb-3">
+                        <i class="bi bi-journal-bookmark-fill text-success"></i> Conclusioni &amp; Scelta Implementativa
+                    </h4>
+                    <p class="text-muted mb-0" style="line-height: 1.8;">
+                        Nel progetto è stata adottata la strategia <strong class="text-success">EntityGraph</strong>.
+                        Come dimostrato dai benchmark, questa scelta riduce il numero di query da <strong>N+1</strong> a
+                        <strong>1 singola query</strong>, abbattendo il carico sul database e migliorando
+                        significativamente i tempi di risposta.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Back -->
+            <a th:href="@{/admin/index}" class="btn btn-outline-secondary shadow-sm">
+                <i class="bi bi-arrow-left"></i> Torna alla Dashboard
+            </a>
+
         </div>
     </div>
 

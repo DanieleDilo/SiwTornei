@@ -48,9 +48,16 @@ public class PartitaService {
     public void updateRisultato(Long id, Partita datiAggiornati) {
         Partita partita = this.partitaRepository.findById(id).orElse(null);
         if (partita != null) {
-            partita.setGoalsHome(datiAggiornati.getGoalsHome());
-            partita.setGoalsAway(datiAggiornati.getGoalsAway());
-            partita.setStato(it.uniroma3.siw.siw_tornei.model.StatoPartita.PLAYED);
+            if (datiAggiornati.getStato() != null && datiAggiornati.getStato() == it.uniroma3.siw.siw_tornei.model.StatoPartita.SCHEDULED) {
+                // Se lo stato è SCHEDULED, azzera il risultato
+                partita.setGoalsHome(null);
+                partita.setGoalsAway(null);
+                partita.setStato(it.uniroma3.siw.siw_tornei.model.StatoPartita.SCHEDULED);
+            } else {
+                partita.setGoalsHome(datiAggiornati.getGoalsHome());
+                partita.setGoalsAway(datiAggiornati.getGoalsAway());
+                partita.setStato(it.uniroma3.siw.siw_tornei.model.StatoPartita.PLAYED);
+            }
             this.partitaRepository.save(partita);
         }
     }

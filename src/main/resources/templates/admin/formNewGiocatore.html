@@ -46,6 +46,11 @@
                         </select>
                         <div class="invalid-feedback" th:if="${#fields.hasErrors('ruolo')}" th:errors="*{ruolo}">Errore</div>
                     </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Altezza (m)</label>
+                        <input type="number" step="0.01" class="form-control" th:classappend="${#fields.hasErrors('altezza')} ? 'is-invalid'" th:field="*{altezza}" placeholder="Es: 1.85" />
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('altezza')}" th:errors="*{altezza}">Errore</div>
+                    </div>
                     <div class="mb-4">
                         <label class="form-label fw-semibold">Data di Nascita</label>
                         <input type="date" class="form-control" th:classappend="${#fields.hasErrors('dataNascita')} ? 'is-invalid'" th:field="*{dataNascita}" />
