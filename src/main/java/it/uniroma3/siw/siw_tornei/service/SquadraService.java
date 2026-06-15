@@ -80,4 +80,5 @@ public class SquadraService {
             this.squadraRepository.save(squadra);
         }
     }
+
 }

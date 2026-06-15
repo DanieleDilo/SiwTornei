@@ -34,6 +34,7 @@ function TeamSearch() {
                         value={ricerca}
                         onChange={(e) => setRicerca(e.target.value)}
                     />
+                   
                 </div>
             </div>
 

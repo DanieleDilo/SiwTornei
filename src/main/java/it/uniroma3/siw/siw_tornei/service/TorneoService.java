@@ -6,6 +6,8 @@ import it.uniroma3.siw.siw_tornei.model.Torneo;
 import it.uniroma3.siw.siw_tornei.repository.PartitaRepository;
 import it.uniroma3.siw.siw_tornei.repository.SquadraRepository;
 import it.uniroma3.siw.siw_tornei.repository.TorneoRepository;
+
+import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -116,4 +118,6 @@ public class TorneoService {
             this.torneoRepository.save(torneo);
         }
     }
+
+
 }
