@@ -1,7 +1,6 @@
 package it.uniroma3.siw.siw_tornei.controller;
 
 import it.uniroma3.siw.siw_tornei.model.Torneo;
-import it.uniroma3.siw.siw_tornei.repository.TorneoRepository;
 import it.uniroma3.siw.siw_tornei.service.TorneoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
