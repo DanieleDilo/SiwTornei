@@ -22,7 +22,7 @@ public interface TorneoRepository extends CrudRepository<Torneo, Long> {
     @Query("SELECT t FROM Torneo t WHERE t.id = :id")
     Optional<Torneo> findByIdWithSquadreEntityGraph(@Param("id") Long id);
 
-    @Query("SELECT t FROM Torneo t)") //lazy
+    @Query("SELECT t FROM Torneo t") //lazy
     List<Torneo> findAll();
 
     }
