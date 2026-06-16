@@ -28,10 +28,14 @@
                         <input type="text" class="form-control" th:classappend="${#fields.hasErrors('nome')} ? 'is-invalid'" th:field="*{nome}" placeholder="Es: Torneo Estivo SIW" />
                         <div class="invalid-feedback" th:errors="*{nome}">Errore</div>
                     </div>
-                    <div class="mb-4">
+                    <div class="mb-3">
                         <label class="form-label fw-semibold">Anno Edizione</label>
                         <input type="number" class="form-control" th:classappend="${#fields.hasErrors('anno')} ? 'is-invalid'" th:field="*{anno}" placeholder="Es: 2026" />
                         <div class="invalid-feedback" th:errors="*{anno}">Errore</div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold">Descrizione</label>
+                        <textarea class="form-control" th:field="*{descrizione}" rows="4" placeholder="Inserisci una descrizione per questo torneo..."></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">Salva Torneo</button>
                 </form>
