@@ -25,4 +25,6 @@ public interface TorneoRepository extends CrudRepository<Torneo, Long> {
     @Query("SELECT t FROM Torneo t") //lazy
     List<Torneo> findAll();
 
+    List<Torneo> findByNomeContainingIgnoreCase(String nome);
+
     }

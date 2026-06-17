@@ -119,5 +119,10 @@ public class TorneoService {
         }
     }
 
+    @Transactional(readOnly = true)
+    public List<Torneo> findByNomeContainingIgnoreCase(String nome) {
+        return this.torneoRepository.findByNomeContainingIgnoreCase(nome);
+    }
+
 
 }
