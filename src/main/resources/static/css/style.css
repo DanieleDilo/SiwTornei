@@ -1,79 +1,524 @@
-/* 1. Importiamo un font modernissimo da Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+/* ==========================================
+   SIW TORNEI - THEME CSS: MODERN & INNOVATIVE
+   Palette: Blue, Green, Deep Black/Dark Navy
+   ========================================== */
 
-/* 2. Sfondo generale e tipografia */
+/* 1. Google Fonts Import - Plus Jakarta Sans */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+/* 2. Design System Variables */
+:root {
+    --bg-dark-primary: #030712;     /* Deep black background */
+    --bg-dark-secondary: #0b0f19;   /* Lighter surface for containers/panels */
+    --bg-dark-tertiary: #111827;    /* Elevated surface for cards */
+    --bg-dark-hover: #1e293b;
+    
+    --color-blue-primary: #0072ff;
+    --color-blue-neon: #00d2ff;     /* Vibrant electric/cyber blue */
+    
+    --color-green-primary: #059669;
+    --color-green-neon: #00ff88;    /* Neon mint green */
+    
+    --text-primary: #f9fafb;
+    --text-secondary: #d1d5db;     /* Light gray for secondary text */
+    --text-muted: #9ca3af;         /* Medium gray for muted text */
+    
+    --border-color: rgba(255, 255, 255, 0.08);
+    --border-color-glow: rgba(0, 210, 255, 0.2);
+    
+    /* Font styles */
+    --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+/* 3. Base Styles */
 body {
-    font-family: 'Inter', sans-serif;
-    background-color: #f4f7fb; /* Un grigio-blu chiarissimo e riposante */
-    color: #2b3445; /* Grigio scuro al posto del nero netto per una lettura migliore */
+    font-family: var(--font-sans);
+    background-color: var(--bg-dark-primary) !important;
+    color: var(--text-primary) !important;
+    overflow-x: hidden;
+    line-height: 1.6;
 }
 
-/* 3. Effetto "Glassmorphism" (Vetro satinato) per la Navbar */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text-primary) !important;
+}
+
+p, li {
+    color: var(--text-secondary) !important;
+}
+
+/* Scrollbar customization */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: var(--bg-dark-primary);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--bg-dark-tertiary);
+    border-radius: 4px;
+    border: 2px solid var(--bg-dark-primary);
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--color-blue-neon);
+}
+
+/* Selection */
+::selection {
+    background-color: rgba(0, 210, 255, 0.3);
+    color: var(--text-primary);
+}
+
+/* 4. Bootstrap Utilities Overrides (The Dark Theme Bridge) */
+.bg-light {
+    background-color: var(--bg-dark-primary) !important;
+}
+
+.bg-white {
+    background-color: var(--bg-dark-secondary) !important;
+}
+
+.text-dark {
+    color: var(--text-primary) !important;
+}
+
+.text-muted {
+    color: var(--text-muted) !important;
+}
+
+.text-secondary {
+    color: var(--text-secondary) !important;
+}
+
+.border, .border-top, .border-bottom, .border-start, .border-end {
+    border-color: var(--border-color) !important;
+}
+
+/* Theme backgrounds utilities */
+.bg-dark-primary {
+    background-color: var(--bg-dark-primary) !important;
+}
+.bg-dark-secondary {
+    background-color: var(--bg-dark-secondary) !important;
+}
+.bg-dark-tertiary {
+    background-color: var(--bg-dark-tertiary) !important;
+}
+
+/* Subtle backgrounds utilities */
+.bg-primary-subtle {
+    background-color: rgba(0, 114, 255, 0.15) !important;
+    color: var(--color-blue-neon) !important;
+}
+.bg-success-subtle {
+    background-color: rgba(5, 150, 105, 0.15) !important;
+    color: var(--color-green-neon) !important;
+}
+.bg-danger-subtle {
+    background-color: rgba(220, 38, 38, 0.15) !important;
+    color: #f87171 !important;
+}
+
+/* 5. Glowing Jumbotron / Hero Panel */
+.p-5.text-center.bg-white {
+    background: radial-gradient(circle at top right, rgba(0, 210, 255, 0.05), transparent 50%),
+                radial-gradient(circle at bottom left, rgba(0, 255, 136, 0.05), transparent 50%),
+                var(--bg-dark-secondary) !important;
+    border: 1px solid var(--border-color) !important;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4) !important;
+    border-radius: 20px !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.p-5.text-center.bg-white::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--color-blue-neon), var(--color-green-neon));
+}
+
+.p-5.text-center.bg-white h1 {
+    font-weight: 800;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #ffffff 0%, var(--text-secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* 6. Glassmorphism Navbar */
 .navbar {
-    background: rgba(13, 110, 253, 0.85) !important;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(11, 15, 25, 0.75) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border-color-glow) !important;
+    padding: 0.85rem 0 !important;
 }
 
-/* 4. Card eleganti, senza bordi e con ombre morbide */
+.navbar-brand {
+    font-size: 1.3rem;
+    letter-spacing: -0.5px;
+    color: var(--text-primary) !important;
+    transition: all 0.3s ease;
+}
+
+.navbar-brand i {
+    color: var(--color-blue-neon) !important;
+    filter: drop-shadow(0 0 5px rgba(0, 210, 255, 0.6));
+    margin-right: 0.5rem;
+}
+
+.navbar-brand:hover {
+    color: var(--color-blue-neon) !important;
+    text-shadow: 0 0 10px rgba(0, 210, 255, 0.4);
+}
+
+/* 7. Premium Cards & Hover Interactions */
 .card {
-    border: none !important;
-    border-radius: 16px; /* Bordi molto più arrotondati */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03); /* Ombra leggerissima di base */
-    transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease;
-    overflow: hidden; /* Assicura che i bordi interni non escano dal raggio */
+    background-color: var(--bg-dark-tertiary) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 18px !important;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2) !important;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    overflow: hidden;
+    color: var(--text-primary) !important;
 }
 
-/* Effetto di sollevamento al passaggio del mouse */
-.transition-hover:hover, .card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08) !important;
+.card:hover, .transition-hover:hover {
+    transform: translateY(-8px) !important;
+    border-color: var(--border-color-glow) !important;
+    box-shadow: 0 15px 30px rgba(0, 210, 255, 0.15) !important;
 }
 
-/* Sistemiamo gli header delle card per rispettare le rotondità */
+.card-body {
+    padding: 1.75rem !important;
+    color: var(--text-primary) !important;
+}
+
+.card-title {
+    color: var(--text-primary) !important;
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+}
+
 .card-header {
-    border-bottom: 1px solid rgba(0,0,0,0.05);
+    background-color: rgba(255, 255, 255, 0.02) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    padding: 1.25rem 1.75rem !important;
 }
 
-/* 5. Pulsanti più accattivanti e "cliccabili" */
+/* Specialized Card Types (e.g. Squadra detail) */
+.card.bg-success {
+    background: linear-gradient(135deg, rgba(5, 150, 105, 0.1) 0%, rgba(3, 7, 18, 0.8) 100%) !important;
+    border: 1px solid rgba(0, 255, 136, 0.2) !important;
+    box-shadow: 0 15px 30px rgba(0, 255, 136, 0.05) !important;
+}
+
+.card.bg-success i {
+    color: var(--color-green-neon) !important;
+    filter: drop-shadow(0 0 10px rgba(0, 255, 136, 0.4));
+}
+
+/* 8. Modern Buttons (Electric Gradient & Glow) */
 .btn {
-    border-radius: 8px; /* Bordi più morbidi */
-    font-weight: 500;
+    border-radius: 10px !important;
+    padding: 0.6rem 1.2rem !important;
+    font-weight: 600 !important;
     letter-spacing: 0.3px;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
+    font-size: 0.9rem;
 }
 
 .btn:hover {
-    transform: translateY(-2px); /* Il bottone sale leggermente */
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transform: translateY(-2px) !important;
 }
 
 .btn:active {
-    transform: translateY(0); /* Torna giù quando clicchi */
+    transform: translateY(0) !important;
 }
 
-/* 6. Raffinamento delle Tabelle (es. Classifica) */
+/* Primary Button (Blue Gradient) */
+.btn-primary {
+    background: linear-gradient(135deg, var(--color-blue-primary) 0%, var(--color-blue-neon) 100%) !important;
+    border: none !important;
+    color: var(--bg-dark-primary) !important;
+    box-shadow: 0 4px 15px rgba(0, 210, 255, 0.3) !important;
+}
+
+.btn-primary:hover {
+    box-shadow: 0 6px 20px rgba(0, 210, 255, 0.5) !important;
+}
+
+/* Success Button (Green Gradient) */
+.btn-success {
+    background: linear-gradient(135deg, var(--color-green-primary) 0%, var(--color-green-neon) 100%) !important;
+    border: none !important;
+    color: var(--bg-dark-primary) !important;
+    box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3) !important;
+}
+
+.btn-success:hover {
+    box-shadow: 0 6px 20px rgba(0, 255, 136, 0.5) !important;
+}
+
+/* Danger Button (Red Gradient) */
+.btn-danger {
+    background: linear-gradient(135deg, #dc2626 0%, #f87171 100%) !important;
+    border: none !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.25) !important;
+}
+
+.btn-danger:hover {
+    box-shadow: 0 6px 20px rgba(239, 68, 68, 0.45) !important;
+}
+
+/* Warning Button (Orange/Gold) */
+.btn-warning {
+    background: linear-gradient(135deg, #d97706 0%, #fbbf24 100%) !important;
+    border: none !important;
+    color: var(--bg-dark-primary) !important;
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.25) !important;
+}
+
+.btn-warning:hover {
+    box-shadow: 0 6px 20px rgba(245, 158, 11, 0.45) !important;
+}
+
+/* Light & Outline Buttons */
+.btn-outline-light {
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    color: var(--text-primary) !important;
+    background-color: rgba(255, 255, 255, 0.02) !important;
+}
+
+.btn-outline-light:hover {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+.btn-outline-secondary {
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-secondary) !important;
+}
+
+.btn-outline-secondary:hover {
+    border-color: var(--text-secondary) !important;
+    color: var(--text-primary) !important;
+    background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+.btn-light {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: var(--text-primary) !important;
+}
+
+.btn-light:hover {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+.btn-outline-primary {
+    border: 1px solid var(--color-blue-neon) !important;
+    color: var(--color-blue-neon) !important;
+    background-color: transparent !important;
+}
+
+.btn-outline-primary:hover {
+    background-color: rgba(0, 210, 255, 0.08) !important;
+    color: var(--color-blue-neon) !important;
+}
+
+/* 9. Tables Customization */
+.table-responsive {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
 .table {
     margin-bottom: 0;
+    color: var(--text-primary) !important;
+    background-color: transparent !important;
 }
 
 .table th {
-    font-weight: 600;
+    font-weight: 700;
     text-transform: uppercase;
-    font-size: 0.85rem;
-    letter-spacing: 0.5px;
-    color: #6c757d;
-    border-bottom: 2px solid #edf2f9;
+    font-size: 0.8rem;
+    letter-spacing: 0.8px;
+    color: var(--color-blue-neon) !important;
+    border-bottom: 2px solid rgba(0, 210, 255, 0.15) !important;
+    padding: 1.1rem 1rem !important;
+    background-color: rgba(11, 15, 25, 0.4) !important;
 }
 
 .table td {
-    border-bottom: 1px solid #edf2f9;
-    padding: 1rem 0.75rem;
+    padding: 1.1rem 1rem !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    background-color: transparent !important;
+    color: var(--text-primary) !important;
 }
 
-/* 7. Centratura Form di Login / Setup */
+.table td a {
+    color: var(--color-blue-neon) !important;
+}
+
+.table td a:hover {
+    color: var(--color-green-neon) !important;
+}
+
+.table-hover tbody tr:hover td {
+    background-color: rgba(0, 210, 255, 0.03) !important;
+    color: var(--text-primary) !important;
+}
+
+/* 10. Forms & Input Fields */
+.form-control, select, textarea {
+    background-color: var(--bg-dark-secondary) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+    border-radius: 10px !important;
+    padding: 0.75rem 1rem !important;
+    transition: all 0.25s ease !important;
+}
+
+.form-control:focus, select:focus, textarea:focus {
+    border-color: var(--color-blue-neon) !important;
+    box-shadow: 0 0 10px rgba(0, 210, 255, 0.25) !important;
+    outline: none !important;
+}
+
+.form-label {
+    color: var(--text-secondary) !important;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+}
+
+/* 11. Alerts Notification Styles */
+.alert {
+    background: rgba(11, 15, 25, 0.85) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 12px !important;
+    color: var(--text-primary) !important;
+    backdrop-filter: blur(8px);
+    padding: 1rem 1.25rem !important;
+}
+
+.alert-success {
+    border-color: rgba(0, 255, 136, 0.2) !important;
+    color: var(--color-green-neon) !important;
+}
+
+.alert-danger {
+    border-color: rgba(239, 68, 68, 0.2) !important;
+    color: #f87171 !important;
+}
+
+/* 12. Badges */
+.badge {
+    padding: 0.5em 0.8em !important;
+    border-radius: 6px !important;
+    font-weight: 600 !important;
+    font-size: 0.75rem !important;
+}
+
+.bg-secondary {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+    color: var(--text-secondary) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+/* 13. Progress Bars (Performance dashboard) */
+.progress {
+    background-color: rgba(255, 255, 255, 0.06) !important;
+    border-radius: 8px !important;
+    height: 10px !important;
+}
+
+.progress-bar {
+    border-radius: 8px !important;
+}
+
+.progress-bar.bg-danger {
+    background: linear-gradient(90deg, #dc2626, #f87171) !important;
+}
+
+.progress-bar.bg-success {
+    background: linear-gradient(90deg, var(--color-green-primary), var(--color-green-neon)) !important;
+}
+
+.progress-bar.bg-primary {
+    background: linear-gradient(90deg, var(--color-blue-primary), var(--color-blue-neon)) !important;
+}
+
+/* 14. Stat Boxes (Performance dashboard) */
+.stat-box {
+    background: var(--bg-dark-secondary) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 14px !important;
+    padding: 1.25rem !important;
+    transition: all 0.3s ease;
+}
+
+.stat-box:hover {
+    border-color: var(--border-color-glow) !important;
+    transform: translateY(-3px);
+}
+
+.stat-box .value {
+    font-size: 2.25rem !important;
+    font-weight: 800 !important;
+    background: linear-gradient(135deg, var(--color-green-neon) 0%, var(--color-blue-neon) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.stat-box .label {
+    color: var(--text-secondary) !important;
+    font-size: 0.7rem !important;
+    letter-spacing: 1px !important;
+}
+
+/* 15. Strategy Cards on Performance Page */
+.strategy-section .card {
+    border-left: 4px solid var(--color-blue-neon) !important;
+}
+
+.strategy-section .card:has(.bg-success-subtle) {
+    border-left: 4px solid var(--color-green-neon) !important;
+}
+
+/* 16. Login/Register Page Specific styling */
 .login-container {
-    max-width: 420px;
-    margin: 8vh auto;
+    padding: 2rem 0;
+}
+
+.login-container hr {
+    border-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+span.translate-middle.bg-dark-secondary {
+    background-color: var(--bg-dark-secondary) !important;
+    color: var(--text-secondary) !important;
+    z-index: 2;
+}
+
+/* Google Sign-In override */
+.btn-outline-dark {
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+    background-color: rgba(255, 255, 255, 0.02) !important;
+}
+
+.btn-outline-dark:hover {
+    background-color: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
 }

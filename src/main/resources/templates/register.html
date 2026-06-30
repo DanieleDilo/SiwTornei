@@ -16,57 +16,95 @@
         </div>
     </nav>
 
-    <div class="container login-container" style="max-width: 450px;">
-        <a th:href="@{/login}" class="btn btn-link text-decoration-none mb-3 p-0"><i class="bi bi-arrow-left"></i> Torna al Login</a>
+    <div class="container mt-5" style="max-width: 1000px;">
+        <a th:href="@{/login}" class="btn btn-outline-secondary mb-4 shadow-sm"><i class="bi bi-arrow-left"></i> Torna al Login</a>
         
-        <div class="card shadow border-0">
-            <div class="card-body p-4">
-                <div class="text-center mb-4">
-                    <i class="bi bi-person-plus-fill display-5 text-success"></i>
-                    <h3 class="fw-bold text-dark mt-2">Crea un Account</h3>
-                    <p class="text-muted small">Registrati per poter commentare le partite dei tornei</p>
-                </div>
-
-
-                <div th:if="${error}" class="alert alert-danger shadow-sm small" th:text="${error}">
-                    Errore durante la registrazione.
-                </div>
-
-                <form th:action="@{/register}" method="POST">
-
-                    <div class="row g-2 mb-3">
-                        <div class="col-6">
-                            <label class="form-label fw-semibold small">Nome</label>
-                            <input type="text" class="form-control" name="nome"
-                                   th:value="${nome}" placeholder="Es: Mario" required />
+        <div class="row g-4 align-items-stretch">
+            <!-- Left Panel: Showcase / Portal features -->
+            <div class="col-lg-6 d-none d-lg-block">
+                <div class="card h-100 bg-success text-white border-0 p-5 d-flex flex-column justify-content-between relative overflow-hidden" 
+                     style="background: radial-gradient(circle at top right, rgba(0, 255, 136, 0.15), transparent 60%),
+                                 radial-gradient(circle at bottom left, rgba(0, 210, 255, 0.1), transparent 60%),
+                                 #051c14 !important;">
+                    <div>
+                        <div class="mb-4">
+                            <span class="badge bg-primary-subtle text-primary px-3 py-2 fw-bold"><i class="bi bi-person-check-fill"></i> NUOVO ACCOUNT</span>
                         </div>
-                        <div class="col-6">
-                            <label class="form-label fw-semibold small">Cognome</label>
-                            <input type="text" class="form-control" name="cognome"
-                                   th:value="${cognome}" placeholder="Es: Rossi" required />
+                        <h2 class="display-5 fw-bold text-white mb-3">Entra nella Community</h2>
+                        <p class="lead text-muted mb-5">Registrati gratuitamente in pochi istanti per partecipare attivamente alle discussioni ed interagire con i tornei sportivi.</p>
+                        
+                        <div class="d-flex flex-column gap-3">
+                            <div class="d-flex align-items-center gap-3">
+                                <i class="bi bi-chat-left-text-fill text-success fs-3"></i>
+                                <span class="text-white fw-semibold">Scrivi commenti e supporta la tua squadra</span>
+                            </div>
+                            <div class="d-flex align-items-center gap-3">
+                                <i class="bi bi-star-fill text-warning fs-3"></i>
+                                <span class="text-white fw-semibold">Salva i tuoi tornei preferiti</span>
+                            </div>
+                            <div class="d-flex align-items-center gap-3">
+                                <i class="bi bi-bell-fill text-primary fs-3"></i>
+                                <span class="text-white fw-semibold">Rimani aggiornato su eventi e partite</span>
+                            </div>
                         </div>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold small">Email</label>
-                        <input type="email" class="form-control" name="email"
-                               th:value="${email}" placeholder="Es: mario.rossi@email.com" required />
                     </div>
                     
-                    <div class="mb-4">
-                        <label class="form-label fw-semibold small">Password</label>
-                        <input type="password" class="form-control" name="password"
-                               placeholder="Min. 8 caratteri, 1 maiuscola, 1 numero" required minlength="8" />
-                        <div class="form-text">Almeno 8 caratteri, una lettera maiuscola e un numero.</div>
+                    <div class="mt-5 pt-3 border-top border-secondary">
+                        <small class="text-muted">© 2026 SIW Tornei. Tutti i diritti riservati.</small>
                     </div>
-                    
-                    <button type="submit" class="btn btn-success w-100 py-2 fw-bold shadow-sm">Completa Registrazione</button>
-                </form>
+                </div>
+            </div>
+            
+            <!-- Right Panel: Registration Form -->
+            <div class="col-lg-6">
+                <div class="card shadow border-0 h-100">
+                    <div class="card-body p-4 p-md-5 d-flex flex-column justify-content-center">
+                        <div class="mb-4">
+                            <i class="bi bi-person-plus-fill display-5 text-success"></i>
+                            <h3 class="fw-bold text-white mt-2">Crea un Account</h3>
+                            <p class="text-muted small">Registrati per poter commentare le partite dei tornei</p>
+                        </div>
+                        
+                        <div th:if="${error}" class="alert alert-danger shadow-sm small mb-3" th:text="${error}">
+                            Errore durante la registrazione.
+                        </div>
 
-                <div class="text-center mt-4 pt-2 border-top">
-                    <p class="mb-0 text-muted small">Hai già un account? 
-                        <a th:href="@{/login}" class="fw-bold text-success text-decoration-none">Accedi qui</a>
-                    </p>
+                        <form th:action="@{/register}" method="POST">
+                            <div class="row g-2 mb-3">
+                                <div class="col-6">
+                                    <label class="form-label">Nome</label>
+                                    <input type="text" class="form-control" name="nome"
+                                           th:value="${nome}" placeholder="Es: Mario" required />
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label">Cognome</label>
+                                    <input type="text" class="form-control" name="cognome"
+                                           th:value="${cognome}" placeholder="Es: Rossi" required />
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" name="email"
+                                       th:value="${email}" placeholder="Es: mario.rossi@email.com" required />
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label class="form-label">Password</label>
+                                <input type="password" class="form-control" name="password"
+                                       placeholder="Min. 8 caratteri, 1 maiuscola, 1 numero" required minlength="8" />
+                                <div class="form-text text-muted small mt-1">Almeno 8 caratteri, una lettera maiuscola e un numero.</div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-success w-100 py-2 fw-bold shadow-sm">Completa Registrazione</button>
+                        </form>
+
+                        <div class="text-center mt-4 pt-3 border-top">
+                            <p class="mb-0 text-muted small">Hai già un account? 
+                                <a th:href="@{/login}" class="fw-bold text-success text-decoration-none">Accedi qui</a>
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -22,79 +22,84 @@
             <i class="bi bi-arrow-left"></i> Torna ai Tornei
         </a>
 
-        <div class="row">
-            <div class="col-md-4">
-                <div class="card shadow-sm border-0 mb-4">
-                    <div class="card-body">
-                        <h3 class="text-primary fw-bold" th:text="${torneo.nome}">Nome Torneo</h3>
-                        <p class="text-muted mb-2"><i class="bi bi-calendar"></i> Edizione: <span th:text="${torneo.anno}">2024</span></p>
-                        <p class="text-secondary small mt-3" th:if="${torneo.descrizione != null and !torneo.descrizione.isEmpty()}">
-                            <i class="bi bi-info-circle-fill text-muted me-1"></i> <span th:text="${torneo.descrizione}">Descrizione Torneo</span>
-                        </p>
-                        <hr>
-                        
-                        <div class="d-grid gap-2 mt-3" sec:authorize="hasAuthority('ADMIN')">
-                            <a th:href="@{'/admin/torneo/' + ${torneo.id} + '/edit'}" class="btn btn-outline-primary">
-                                 <i class="bi bi-pencil-square"></i> Modifica Dettagli
-                            </a>
-                            <a th:href="@{'/admin/torneo/' + ${torneo.id} + '/squadre'}" class="btn btn-warning">
-                                 <i class="bi bi-plus-circle-fill"></i> Gestisci Iscrizioni
-                            </a>
-                            <form th:action="@{'/admin/torneo/' + ${torneo.id} + '/delete'}" method="POST" 
-                                  onsubmit="return confirm('Sei sicuro di voler eliminare definitivamente questo torneo?');">
-                                <button type="submit" class="btn btn-danger w-100">
-                                    <i class="bi bi-trash3-fill"></i> Elimina Torneo
-                                </button>
-                            </form>
-                        </div>
+        <!-- Full-width Tournament Header Banner -->
+        <div class="card shadow-sm border-0 mb-4 bg-primary text-white">
+            <div class="card-body p-4 p-md-5 d-flex flex-column flex-md-row justify-content-between align-items-center gap-4">
+                <div class="d-flex align-items-center gap-4 text-center text-md-start flex-column flex-md-row">
+                    <div class="p-3 bg-white bg-opacity-10 rounded-circle">
+                        <i class="bi bi-award-fill display-2 text-warning"></i>
                     </div>
+                    <div>
+                        <h1 class="fw-bold text-white mb-1 display-4" th:text="${torneo.nome}">Nome Torneo</h1>
+                        <p class="mb-0 fs-5 opacity-90">
+                            <i class="bi bi-calendar"></i> Edizione: <span th:text="${torneo.anno}">2024</span>
+                            <span th:if="${torneo.descrizione != null and !torneo.descrizione.isEmpty()}" class="d-block d-md-inline ms-0 ms-md-3 mt-2 mt-md-0 fs-6 opacity-75">
+                                <i class="bi bi-info-circle-fill"></i> <span th:text="${torneo.descrizione}">Descrizione Torneo</span>
+                            </span>
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Admin Operations inline button bar -->
+                <div sec:authorize="hasAuthority('ADMIN')" class="d-flex flex-wrap gap-2 justify-content-center">
+                    <a th:href="@{'/admin/torneo/' + ${torneo.id} + '/edit'}" class="btn btn-outline-light px-3 py-2">
+                         <i class="bi bi-pencil-square"></i> Modifica Dettagli
+                    </a>
+                    <a th:href="@{'/admin/torneo/' + ${torneo.id} + '/squadre'}" class="btn btn-warning px-3 py-2">
+                         <i class="bi bi-plus-circle-fill"></i> Gestisci Iscrizioni
+                    </a>
+                    <form th:action="@{'/admin/torneo/' + ${torneo.id} + '/delete'}" method="POST" 
+                          onsubmit="return confirm('Sei sicuro di voler eliminare definitivamente questo torneo?');" class="m-0">
+                        <button type="submit" class="btn btn-danger px-3 py-2">
+                            <i class="bi bi-trash3-fill"></i> Elimina Torneo
+                        </button>
+                    </form>
                 </div>
             </div>
+        </div>
+
+        <!-- Full-width Standings Section -->
+        <div class="card shadow-sm border-0 mb-5">
+            <div class="card-header bg-white p-3">
+                <h4 class="mb-0 fw-bold text-success"><i class="bi bi-list-ol"></i> Classifica del Torneo</h4>
+            </div>
             
-            <div class="col-md-8">
-                <div class="card shadow-sm border-0">
-                    <div class="card-header bg-white p-3">
-                        <h4 class="mb-0 fw-bold text-success"><i class="bi bi-list-ol"></i> Classifica del Torneo</h4>
-                    </div>
-                    
-                    <div class="table-responsive" th:if="${classifica != null and !classifica.isEmpty()}">
-                        <table class="table table-hover align-middle mb-0 text-center">
-                            <thead class="table-dark">
-                                <tr>
-                                    <th>#</th>
-                                    <th class="text-start">Squadra</th>
-                                    <th>Pt</th>
-                                    <th>G</th>
-                                    <th>V</th>
-                                    <th>P</th>
-                                    <th>S</th>
-                                    <th>GF</th>
-                                    <th>GS</th>
-                                    <th>DR</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr th:each="riga, iterStat : ${classifica}">
-                                    <td class="fw-bold text-muted" th:text="${iterStat.count}">1</td>
-                                    <td class="text-start fw-bold text-primary">
-                                        <a th:href="@{'/squadra/' + ${riga.squadra.id}(from='torneo', refId=${torneo.id})}" class="text-decoration-none" th:text="${riga.squadra.nome}">Nome</a>
-                                    </td>
-                                    <td class="fw-bold fs-5" th:text="${riga.punti}">0</td>
-                                    <td th:text="${riga.partiteGiocate}">0</td>
-                                    <td class="text-success fw-bold" th:text="${riga.vittorie}">0</td>
-                                    <td class="text-warning fw-bold" th:text="${riga.pareggi}">0</td>
-                                    <td class="text-danger fw-bold" th:text="${riga.sconfitte}">0</td>
-                                    <td th:text="${riga.golFatti}">0</td>
-                                    <td th:text="${riga.golSubiti}">0</td>
-                                    <td th:text="${riga.differenzaReti}">0</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div th:unless="${classifica != null and !classifica.isEmpty()}" class="card-body text-center py-5">
-                        <p class="text-muted mb-0">Nessuna squadra iscritta o classifica non disponibile.</p>
-                    </div>
-                </div>
+            <div class="table-responsive" th:if="${classifica != null and !classifica.isEmpty()}">
+                <table class="table table-hover align-middle mb-0 text-center">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>#</th>
+                            <th class="text-start">Squadra</th>
+                            <th>Pt</th>
+                            <th>G</th>
+                            <th>V</th>
+                            <th>P</th>
+                            <th>S</th>
+                            <th>GF</th>
+                            <th>GS</th>
+                            <th>DR</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="riga, iterStat : ${classifica}">
+                            <td class="fw-bold text-muted" th:text="${iterStat.count}">1</td>
+                            <td class="text-start fw-bold text-primary">
+                                <a th:href="@{'/squadra/' + ${riga.squadra.id}(from='torneo', refId=${torneo.id})}" class="text-decoration-none" th:text="${riga.squadra.nome}">Nome</a>
+                            </td>
+                            <td class="fw-bold fs-5" th:text="${riga.punti}">0</td>
+                            <td th:text="${riga.partiteGiocate}">0</td>
+                            <td class="text-success fw-bold" th:text="${riga.vittorie}">0</td>
+                            <td class="text-warning fw-bold" th:text="${riga.pareggi}">0</td>
+                            <td class="text-danger fw-bold" th:text="${riga.sconfitte}">0</td>
+                            <td th:text="${riga.golFatti}">0</td>
+                            <td th:text="${riga.golSubiti}">0</td>
+                            <td th:text="${riga.differenzaReti}">0</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div th:unless="${classifica != null and !classifica.isEmpty()}" class="card-body text-center py-5">
+                <p class="text-muted mb-0">Nessuna squadra iscritta o classifica non disponibile.</p>
             </div>
         </div>
     </div>

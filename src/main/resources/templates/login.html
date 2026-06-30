@@ -16,56 +16,96 @@
         </div>
     </nav>
 
-    <div class="container login-container" style="max-width: 450px;">
-        <a th:href="@{/}" class="btn btn-link text-decoration-none mb-3 p-0"><i class="bi bi-arrow-left"></i> Torna alla Home</a>
+    <div class="container mt-5" style="max-width: 1000px;">
+        <a th:href="@{/}" class="btn btn-outline-secondary mb-4 shadow-sm"><i class="bi bi-arrow-left"></i> Torna alla Home</a>
         
-        <div class="card shadow border-0">
-            <div class="card-body p-4">
-                <div class="text-center mb-4">
-                    <i class="bi bi-person-circle display-5 text-primary"></i>
-                    <h3 class="fw-bold text-dark mt-2">Bentornato</h3>
-                    <p class="text-muted small">Accedi per gestire o commentare le partite</p>
-                </div>
-                
-                <div th:if="${param.registered}" class="alert alert-success shadow-sm small">
-                    <i class="bi bi-check-circle-fill"></i> Registrazione completata! Ora puoi accedere.
-                </div>
-                <div th:if="${param.error}" class="alert alert-danger shadow-sm small">
-                    <i class="bi bi-exclamation-triangle-fill"></i> Credenziali non valide. Riprova.
-                </div>
-                <div th:if="${param.logout}" class="alert alert-success shadow-sm small">
-                    <i class="bi bi-check-circle-fill"></i> Disconnessione effettuata con successo.
-                </div>
-
-                <div class="d-grid gap-2 mb-3">
-                    <a href="/oauth2/authorization/google" class="btn btn-outline-dark fw-bold py-2 shadow-sm d-flex align-items-center justify-content-center gap-2">
-                        <i class="bi bi-google text-danger fs-5"></i> Accedi con Google
-                    </a>
-                </div>
-
-                <div class="text-center text-muted position-relative my-4">
-                    <hr>
-                    <span class="bg-white px-3 position-absolute top-50 start-50 translate-middle small">oppure</span>
-                </div>
-
-                <p class="text-center text-muted small mb-3">Se sei l'admin, usa qui sotto le credenziali admin per entrare nell'area riservata.</p>
-
-                <form th:action="@{/login}" method="POST" class="mb-3">
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold small">Email</label>
-                        <input type="text" name="username" class="form-control" placeholder="Inserisci la tua email" required autofocus />
+        <div class="row g-4 align-items-stretch">
+            <!-- Left Panel: Showcase / Portal features -->
+            <div class="col-lg-6 d-none d-lg-block">
+                <div class="card h-100 bg-primary text-white border-0 p-5 d-flex flex-column justify-content-between relative overflow-hidden" 
+                     style="background: radial-gradient(circle at top right, rgba(0, 210, 255, 0.15), transparent 60%),
+                                 radial-gradient(circle at bottom left, rgba(0, 255, 136, 0.1), transparent 60%),
+                                 #0b162a !important;">
+                    <div>
+                        <div class="mb-4">
+                            <span class="badge bg-success-subtle text-success px-3 py-2 fw-bold"><i class="bi bi-lightning-fill"></i> PORTALE SIW TORNEI</span>
+                        </div>
+                        <h2 class="display-5 fw-bold text-white mb-3">Segui il torneo dei tuoi sogni</h2>
+                        <p class="lead text-muted mb-5">Accedi per gestire le squadre, visualizzare le statistiche in tempo reale e commentare le sfide più calde della stagione.</p>
+                        
+                        <div class="d-flex flex-column gap-3">
+                            <div class="d-flex align-items-center gap-3">
+                                <i class="bi bi-check2-circle text-primary fs-3"></i>
+                                <span class="text-white fw-semibold">Classifiche e statistiche aggiornate istantaneamente</span>
+                            </div>
+                            <div class="d-flex align-items-center gap-3">
+                                <i class="bi bi-check2-circle text-success fs-3"></i>
+                                <span class="text-white fw-semibold">Area dedicata per arbitri e amministratori</span>
+                            </div>
+                            <div class="d-flex align-items-center gap-3">
+                                <i class="bi bi-check2-circle text-info fs-3"></i>
+                                <span class="text-white fw-semibold">Commenti e discussioni live sulle partite</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="mb-4">
-                        <label class="form-label fw-semibold small">Password</label>
-                        <input type="password" name="password" class="form-control" placeholder="Inserisci la password" required />
+                    
+                    <div class="mt-5 pt-3 border-top border-secondary">
+                        <small class="text-muted">© 2026 SIW Tornei. Tutti i diritti riservati.</small>
                     </div>
-                    <button type="submit" class="btn btn-primary w-100 py-2 fw-bold shadow-sm">Accedi</button>
-                </form>
+                </div>
+            </div>
+            
+            <!-- Right Panel: Login Form -->
+            <div class="col-lg-6">
+                <div class="card shadow border-0 h-100">
+                    <div class="card-body p-4 p-md-5 d-flex flex-column justify-content-center">
+                        <div class="mb-4">
+                            <i class="bi bi-person-circle display-5 text-primary"></i>
+                            <h3 class="fw-bold text-white mt-2">Bentornato</h3>
+                            <p class="text-muted small">Accedi per gestire o commentare le partite</p>
+                        </div>
+                        
+                        <div th:if="${param.registered}" class="alert alert-success shadow-sm small mb-3">
+                            <i class="bi bi-check-circle-fill"></i> Registrazione completata! Ora puoi accedere.
+                        </div>
+                        <div th:if="${param.error}" class="alert alert-danger shadow-sm small mb-3">
+                            <i class="bi bi-exclamation-triangle-fill"></i> Credenziali non valide. Riprova.
+                        </div>
+                        <div th:if="${param.logout}" class="alert alert-success shadow-sm small mb-3">
+                            <i class="bi bi-check-circle-fill"></i> Disconnessione effettuata con successo.
+                        </div>
 
-                <div class="text-center mt-4 pt-2 border-top">
-                    <p class="mb-0 text-muted small">Non hai ancora un account? 
-                        <a th:href="@{/register}" class="fw-bold text-primary text-decoration-none">Registrati qui</a>
-                    </p>
+                        <div class="d-grid gap-2 mb-3">
+                            <a href="/oauth2/authorization/google" class="btn btn-outline-dark fw-bold py-2 shadow-sm d-flex align-items-center justify-content-center gap-2">
+                                <i class="bi bi-google text-danger fs-5"></i> Accedi con Google
+                            </a>
+                        </div>
+
+                        <div class="text-center text-muted position-relative my-4">
+                            <hr>
+                            <span class="px-3 position-absolute top-50 start-50 translate-middle small bg-dark-secondary">oppure</span>
+                        </div>
+
+                        <p class="text-muted small mb-3 text-center">Se sei l'admin, usa qui sotto le credenziali locali per entrare nell'area riservata.</p>
+
+                        <form th:action="@{/login}" method="POST" class="mb-3">
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="text" name="username" class="form-control" placeholder="Inserisci la tua email" required autofocus />
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label">Password</label>
+                                <input type="password" name="password" class="form-control" placeholder="Inserisci la password" required />
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100 py-2 fw-bold shadow-sm">Accedi</button>
+                        </form>
+
+                        <div class="text-center mt-4 pt-3 border-top">
+                            <p class="mb-0 text-muted small">Non hai ancora un account? 
+                                <a th:href="@{/register}" class="fw-bold text-primary text-decoration-none">Registrati qui</a>
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

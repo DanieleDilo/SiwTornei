@@ -30,74 +30,78 @@
             </a>
         </th:block>
 
-        <div class="row">
-            <div class="col-md-4">
-                <div class="card shadow-sm border-0 mb-4 bg-success text-white">
-                    <div class="card-body text-center py-5">
-                        <i class="bi bi-shield-fill display-1"></i>
-                        <h2 class="fw-bold mt-3" th:text="${squadra.nome}">Nome</h2>
-                        <p class="mb-0 fs-5"><i class="bi bi-geo-alt-fill"></i> <span th:text="${squadra.citta}">Città</span></p>
-                        <p>Dal <span th:text="${squadra.annoFondazione}">1900</span></p>
+        <!-- Full width Team Header Banner -->
+        <div class="card bg-success text-white mb-4 shadow-sm border-0">
+            <div class="card-body p-4 p-md-5 d-flex flex-column flex-md-row align-items-center justify-content-between gap-4">
+                <div class="d-flex align-items-center gap-4 text-center text-md-start flex-column flex-md-row">
+                    <div class="team-shield-wrapper p-3 bg-white bg-opacity-10 rounded-circle">
+                        <i class="bi bi-shield-fill display-2 text-white"></i>
+                    </div>
+                    <div>
+                        <h1 class="fw-bold mb-1 display-4" th:text="${squadra.nome}">Nome</h1>
+                        <p class="mb-0 fs-5 opacity-90"><i class="bi bi-geo-alt-fill"></i> <span th:text="${squadra.citta}">Città</span> &nbsp;|&nbsp; <i class="bi bi-calendar-check"></i> Dal <span th:text="${squadra.annoFondazione}">1900</span></p>
                     </div>
                 </div>
                 
-                <div sec:authorize="hasAuthority('ADMIN')" class="d-grid gap-2">
-                    <a th:href="@{'/admin/squadra/' + ${squadra.id} + '/edit'}" class="btn btn-warning shadow-sm">
+                <!-- Admin Operations inline button bar -->
+                <div sec:authorize="hasAuthority('ADMIN')" class="d-flex flex-wrap gap-2 justify-content-center">
+                    <a th:href="@{'/admin/squadra/' + ${squadra.id} + '/edit'}" class="btn btn-warning px-4 py-2">
                         <i class="bi bi-pencil-square"></i> Modifica Squadra
                     </a>
-                    <a th:href="@{'/admin/squadra/' + ${squadra.id} + '/formNewGiocatore'}" class="btn btn-dark shadow-sm">
+                    <a th:href="@{'/admin/squadra/' + ${squadra.id} + '/formNewGiocatore'}" class="btn btn-dark px-4 py-2">
                         <i class="bi bi-person-plus"></i> Aggiungi Giocatore
                     </a>
                     <form th:action="@{'/admin/squadra/' + ${squadra.id} + '/delete'}" method="POST" 
-                          onsubmit="return confirm('Vuoi davvero eliminare questa Squadra?');">
-                        <button type="submit" class="btn btn-outline-danger w-100 shadow-sm">
-                            <i class="bi bi-trash3"></i> Elimina Squadra
+                          onsubmit="return confirm('Vuoi davvero eliminare questa Squadra?');" class="m-0">
+                        <button type="submit" class="btn btn-danger px-4 py-2">
+                            <i class="bi bi-trash3"></i> Elimina
                         </button>
                     </form>
                 </div>
             </div>
+        </div>
+
+        <!-- Players List section - Grids of personal cards -->
+        <div class="mt-5">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <h3 class="fw-bold text-primary mb-0"><i class="bi bi-people-fill"></i> Rosa Giocatori</h3>
+            </div>
             
-            <div class="col-md-8">
-                <div class="card shadow-sm border-0">
-                    <div class="card-header bg-white p-3">
-                        <h4 class="mb-0 fw-bold"><i class="bi bi-people"></i> Rosa Giocatori</h4>
-                    </div>
-                    <div class="table-responsive" th:if="${squadra.giocatori != null and !squadra.giocatori.isEmpty()}">
-                        <table class="table table-hover align-middle mb-0">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Nome e Cognome</th>
-                                    <th>Ruolo</th>
-                                    <th>Nascita</th>
-                                    <th class="text-end" sec:authorize="hasAuthority('ADMIN')">Azioni</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr th:each="giocatore : ${squadra.giocatori}">
-                                    <td class="fw-bold" th:text="${giocatore.nome} + ' ' + ${giocatore.cognome}">Nome</td>
-                                    <td><span class="badge bg-secondary" th:text="${giocatore.ruolo}">Ruolo</span></td>
-                                    <td th:text="${giocatore.dataNascita}">Data</td>
-                                    <td class="text-end" sec:authorize="hasAuthority('ADMIN')">
-                                        <div class="d-flex justify-content-end gap-1">
-                                            <a th:href="@{'/admin/giocatore/' + ${giocatore.id} + '/edit'}" class="btn btn-sm btn-outline-primary">
-                                                <i class="bi bi-pencil-fill"></i>
-                                            </a>
-                                            <form th:action="@{'/admin/giocatore/' + ${giocatore.id} + '/delete'}" method="POST" 
-                                                  onsubmit="return confirm('Eliminare questo giocatore?');" class="m-0">
-                                                <button type="submit" class="btn btn-sm btn-danger">
-                                                    <i class="bi bi-person-x-fill"></i>
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div th:unless="${squadra.giocatori != null and !squadra.giocatori.isEmpty()}" class="card-body text-center py-5">
-                        <p class="text-muted mb-0">Nessun giocatore registrato.</p>
+            <div th:if="${squadra.giocatori != null and !squadra.giocatori.isEmpty()}" class="row g-4">
+                <div class="col-md-6 col-lg-4" th:each="giocatore : ${squadra.giocatori}">
+                    <div class="card h-100 transition-hover border-0 shadow-sm">
+                        <div class="card-body d-flex flex-column justify-content-between p-4">
+                            <div>
+                                <div class="d-flex align-items-start justify-content-between mb-3">
+                                    <div class="p-2 bg-primary bg-opacity-10 text-primary rounded-3">
+                                        <i class="bi bi-person-badge fs-3"></i>
+                                    </div>
+                                    <span class="badge bg-secondary px-3 py-2 fs-7" th:text="${giocatore.ruolo}">Ruolo</span>
+                                </div>
+                                <h5 class="fw-bold text-white mb-2" th:text="${giocatore.nome} + ' ' + ${giocatore.cognome}">Nome</h5>
+                                <p class="text-muted small mb-0"><i class="bi bi-calendar-event"></i> Nascita: <span th:text="${giocatore.dataNascita}">Data</span></p>
+                            </div>
+                            
+                            <!-- Admin Actions on specific players -->
+                            <div sec:authorize="hasAuthority('ADMIN')" class="mt-4 pt-3 border-top d-flex justify-content-end gap-2">
+                                <a th:href="@{'/admin/giocatore/' + ${giocatore.id} + '/edit'}" class="btn btn-sm btn-outline-primary px-3">
+                                    <i class="bi bi-pencil-fill"></i> Modifica
+                                </a>
+                                <form th:action="@{'/admin/giocatore/' + ${giocatore.id} + '/delete'}" method="POST" 
+                                      onsubmit="return confirm('Eliminare questo giocatore?');" class="m-0">
+                                    <button type="submit" class="btn btn-sm btn-danger px-3">
+                                        <i class="bi bi-person-x-fill"></i> Rimuovi
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
+            </div>
+            
+            <div th:unless="${squadra.giocatori != null and !squadra.giocatori.isEmpty()}" class="card border-0 shadow-sm p-5 text-center">
+                <i class="bi bi-people text-muted display-1 mb-3"></i>
+                <p class="text-muted mb-0 fs-5">Nessun giocatore registrato in questa squadra.</p>
             </div>
         </div>
     </div>
