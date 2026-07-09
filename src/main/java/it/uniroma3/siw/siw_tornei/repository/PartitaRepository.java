@@ -13,4 +13,15 @@ public interface PartitaRepository extends CrudRepository<Partita, Long> {
 
     @Query("SELECT p FROM Partita p WHERE p.squadraCasa = :squadra OR p.squadraTrasferta = :squadra")
     List<Partita> findBySquadra(@Param("squadra") Squadra squadra);
+
+    List<Partita> findAllByOrderByDataOraDesc();
+
+    @Query("SELECT p FROM Partita p WHERE p.stato = 'PLAYED' ORDER BY p.dataOra DESC")
+    List<Partita> findAllPlayedByOrderByDataOraDesc();
+
+    @Query(value = "SELECT * FROM partita ORDER BY RANDOM() LIMIT :limit", nativeQuery = true)
+    List<Partita> findRandomPartite(@Param("limit") long limit);
+    
+    @Query("SELECT (sum(p.goalsHome + p.goalsAway), 0) FROM Partita p WHERE p.torneo.id = :torneoId")
+    Long countGoalsByTorneoId(@Param("torneoId") Long torneoId);
 }

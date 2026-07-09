@@ -61,4 +61,28 @@ public class PartitaService {
             this.partitaRepository.save(partita);
         }
     }
+
+    @Transactional(readOnly = true)
+    public List<Partita> findAllByOrderByDataDescOraDesc() {
+        return this.partitaRepository.findAllByOrderByDataOraDesc();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Partita> findAllPlayed() {
+        return this.partitaRepository.findAllPlayedByOrderByDataOraDesc();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Partita> findRandomPartite() {
+        return this.partitaRepository.findRandomPartite(3);
+    }
+
+    @Transactional(readOnly = true)
+    public long countGoalsByTorneoId(Long torneoId) {
+        if(this.partitaRepository.countGoalsByTorneoId(torneoId) == null) {
+            return 0L;
+        }
+        return this.partitaRepository.countGoalsByTorneoId(torneoId);
+    }
+
 }

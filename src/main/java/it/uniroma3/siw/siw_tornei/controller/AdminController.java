@@ -115,20 +115,39 @@ public class AdminController {
         Squadra squadra = this.squadraService.findById(squadraId);
         model.addAttribute("squadra", squadra);
         model.addAttribute("giocatore", new Giocatore());
+        model.addAttribute("squadre", this.squadraService.findAll());
         return "admin/formNewGiocatore";
     }
 
-    // 2. Salva il giocatore
-    @PostMapping("/admin/squadra/{squadraId}/giocatore")
-    public String newGiocatore(@PathVariable("squadraId") Long squadraId,
-            @Valid @ModelAttribute("giocatore") Giocatore giocatore, BindingResult bindingResult, Model model) {
+    @GetMapping("/admin/formNewGiocatore")
+    public String formNewGiocatoreGenerico(Model model) {
+        model.addAttribute("giocatore", new Giocatore());
+        model.addAttribute("squadre", this.squadraService.findAll());
+        return "admin/formNewGiocatore";
+    }
+
+    @PostMapping("/admin/giocatore")
+    public String newGiocatoreGenerico(@Valid @ModelAttribute("giocatore") Giocatore giocatore, 
+                                       BindingResult bindingResult, 
+                                       @RequestParam(value = "squadraId", required = false) Long squadraId, 
+                                       Model model) {
         if (bindingResult.hasErrors()) {
-            Squadra squadra = this.squadraService.findById(squadraId);
-            model.addAttribute("squadra", squadra);
+            model.addAttribute("squadre", this.squadraService.findAll());
+            if (squadraId != null) {
+                model.addAttribute("squadra", this.squadraService.findById(squadraId));
+            }
             return "admin/formNewGiocatore";
         }
-        this.giocatoreService.saveGiocatoreInSquadra(giocatore, squadraId);
-        return "redirect:/squadra/" + squadraId;
+        if (squadraId != null) {
+            Squadra squadra = this.squadraService.findById(squadraId);
+            giocatore.setSquadra(squadra);
+        }
+        this.giocatoreService.saveGiocatore(giocatore);
+        if (squadraId != null) {
+            return "redirect:/squadra/" + squadraId;
+        } else {
+            return "redirect:/giocatori";
+        }
     }
 
     // 1. Mostra la form per pianificare una partita

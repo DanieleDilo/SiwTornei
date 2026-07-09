@@ -9,5 +9,17 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface SquadraRepository extends CrudRepository<Squadra, Long> {
 
+    List<Squadra> findAllByOrderByAnnoFondazioneAscNomeAsc();
+
+    List<Squadra> findAllByOrderByNomeDesc();
+
+    List<Squadra> findByCitta(String citta);
+
+    List<Squadra> findAllByOrderByCittaDesc();
+
+   
+
+    
+
 
 }

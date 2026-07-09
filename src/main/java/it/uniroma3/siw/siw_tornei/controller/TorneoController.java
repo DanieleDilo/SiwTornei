@@ -1,6 +1,7 @@
 package it.uniroma3.siw.siw_tornei.controller;
 
 import it.uniroma3.siw.siw_tornei.model.Torneo;
+import it.uniroma3.siw.siw_tornei.service.PartitaService;
 import it.uniroma3.siw.siw_tornei.service.TorneoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,6 +15,9 @@ public class TorneoController {
 
     @Autowired
     private TorneoService torneoService;
+
+    @Autowired
+    private PartitaService partitaService;
 
     @Autowired
     private it.uniroma3.siw.siw_tornei.service.ClassificaService classificaService;
@@ -41,7 +45,6 @@ public class TorneoController {
 
         // Calcoliamo e passiamo la classifica calcolata dal service
         model.addAttribute("classifica", classificaService.generaClassifica(torneo));
-
         return "torneo";
     }
 

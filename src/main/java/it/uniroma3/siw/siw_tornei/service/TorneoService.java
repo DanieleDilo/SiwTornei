@@ -124,5 +124,17 @@ public class TorneoService {
         return this.torneoRepository.findByNomeContainingIgnoreCase(nome);
     }
 
+    @Transactional(readOnly = true)
+    public List<Torneo> findAllByOrderByAnnoAsc() {
+        return this.torneoRepository.findAllByOrderByAnnoAsc();
+    }
+
+    @Transactional(readOnly = true)
+    public Long countAllIscrizioniSquadre() {
+        return this.torneoRepository.countAllIscrizioniSquadre();
+    }
+
+
+
 
 }

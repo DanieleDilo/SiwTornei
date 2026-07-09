@@ -16,16 +16,20 @@
     </nav>
 
     <div class="container login-container">
-        <a th:href="@{'/squadra/' + ${squadra.id}}" class="btn btn-link text-decoration-none mb-3 p-0">
+        <a th:if="${squadra != null}" th:href="@{'/squadra/' + ${squadra.id}}" class="btn btn-link text-decoration-none mb-3 p-0">
             <i class="bi bi-arrow-left"></i> Annulla e Torna alla Squadra
+        </a>
+        <a th:unless="${squadra != null}" th:href="@{/giocatori}" class="btn btn-link text-decoration-none mb-3 p-0">
+            <i class="bi bi-arrow-left"></i> Annulla e Torna all'Elenco Giocatori
         </a>
         
         <div class="card shadow border-0">
             <div class="card-body p-4">
                 <h3 class="fw-bold text-dark mb-2"><i class="bi bi-person-plus-fill"></i> Tesseramento</h3>
-                <p class="text-muted small mb-4">Stai aggiungendo un atleta alla squadra: <strong th:text="${squadra.nome}">Club</strong></p>
+                <p class="text-muted small mb-4" th:if="${squadra != null}">Stai aggiungendo un atleta alla squadra: <strong th:text="${squadra.nome}">Club</strong></p>
+                <p class="text-muted small mb-4" th:unless="${squadra != null}">Stai aggiungendo un nuovo atleta al sistema.</p>
                 
-                <form th:action="@{'/admin/squadra/' + ${squadra.id} + '/giocatore'}" method="POST" th:object="${giocatore}">
+                <form th:action="@{/admin/giocatore}" method="POST" th:object="${giocatore}">
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Nome</label>
                         <input type="text" class="form-control" th:classappend="${#fields.hasErrors('nome')} ? 'is-invalid'" th:field="*{nome}" />
@@ -56,6 +60,16 @@
                         <input type="date" class="form-control" th:classappend="${#fields.hasErrors('dataNascita')} ? 'is-invalid'" th:field="*{dataNascita}" />
                         <div class="invalid-feedback" th:errors="*{dataNascita}">Errore</div>
                     </div>
+                    
+                    <div class="mb-4" th:if="${squadra == null}">
+                        <label class="form-label fw-semibold">Squadra</label>
+                        <select class="form-select" name="squadraId">
+                            <option value="">Nessuna squadra (Svincolato)</option>
+                            <option th:each="s : ${squadre}" th:value="${s.id}" th:text="${s.nome}">Nome Squadra</option>
+                        </select>
+                    </div>
+                    <input type="hidden" name="squadraId" th:if="${squadra != null}" th:value="${squadra.id}" />
+
                     <button type="submit" class="btn btn-dark w-100 py-2 fw-bold">Completa Iscrizione</button>
                 </form>
             </div>

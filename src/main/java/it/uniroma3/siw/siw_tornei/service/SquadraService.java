@@ -81,5 +81,24 @@ public class SquadraService {
         }
     }
 
+    @Transactional(readOnly = true)
+    public List<Squadra> findAllSorted() {
+        return this.squadraRepository.findAllByOrderByAnnoFondazioneAscNomeAsc();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Squadra> findAllByNomeDesc() {
+        return this.squadraRepository.findAllByOrderByNomeDesc();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Squadra> findByCitta(String citta) {
+        return this.squadraRepository.findByCitta(citta);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Squadra> findAllByCittaDesc() {
+        return this.squadraRepository.findAllByOrderByCittaDesc();
+    }
 
 }

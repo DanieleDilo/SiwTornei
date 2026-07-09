@@ -24,7 +24,13 @@
             </a>
         </th:block>
         
-        <th:block th:unless="${from == 'torneo'}">
+        <th:block th:if="${from == 'giocatori'}">
+            <a th:href="@{/giocatori}" class="btn btn-outline-secondary mb-4 shadow-sm">
+                <i class="bi bi-arrow-left"></i> Torna all'Elenco Giocatori
+            </a>
+        </th:block>
+        
+        <th:block th:unless="${from == 'torneo' or from == 'giocatori'}">
             <a th:href="@{/squadra}" class="btn btn-outline-secondary mb-4 shadow-sm">
                 <i class="bi bi-arrow-left"></i> Torna alla Ricerca Squadre
             </a>

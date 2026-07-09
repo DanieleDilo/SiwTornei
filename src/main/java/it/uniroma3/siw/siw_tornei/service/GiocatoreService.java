@@ -3,6 +3,9 @@ package it.uniroma3.siw.siw_tornei.service;
 import it.uniroma3.siw.siw_tornei.model.Giocatore;
 import it.uniroma3.siw.siw_tornei.model.Squadra;
 import it.uniroma3.siw.siw_tornei.repository.GiocatoreRepository;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,5 +57,33 @@ public class GiocatoreService {
             giocatore.setAltezza(giocatoreModificato.getAltezza());
             this.giocatoreRepository.save(giocatore);
         }
+    }
+
+    @Transactional(readOnly = true)
+    public List<Giocatore> findAllSorted() {
+        return this.giocatoreRepository.findAllByOrderByCognomeDescNomeDesc();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Giocatore> searchGiocatori(String term) {
+        if (term == null || term.isBlank()) {
+            return this.findAllSorted();
+        }
+        return this.giocatoreRepository.searchByTerm(term);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Giocatore> findAll() {
+        return this.giocatoreRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Giocatore> findBySquadraOrderByCognomeAsc(Squadra squadra) {
+        return this.giocatoreRepository.findBySquadraOrderByCognomeAscNomeAsc(squadra.getId());
+    }
+
+    @Transactional(readOnly = true)
+    public List<Giocatore> findAllByOrderByDataNascitaAsc() {
+        return this.giocatoreRepository.findAllByOrderByDataNascitaAsc();
     }
 }
